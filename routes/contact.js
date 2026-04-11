@@ -3,7 +3,6 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const { queries } = require('../db/database');
 
-// Validation helper
 function validateContact(data) {
   const errors = [];
   if (!data.firstName || data.firstName.trim().length < 1) errors.push('First name is required');
@@ -14,7 +13,6 @@ function validateContact(data) {
   return errors;
 }
 
-// Build transporter (only if SMTP credentials exist)
 function getTransporter() {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) return null;
   return nodemailer.createTransport({
@@ -37,16 +35,16 @@ async function sendNotificationEmail(submission) {
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a1628;color:#fff;border-radius:12px;overflow:hidden;">
-      <div style="background:linear-gradient(135deg,#0d7377,#14a3a8);padding:24px 32px;">
-        <h2 style="margin:0;color:#fff;font-size:20px;">🦷 New Appointment Request</h2>
+      <div style="background:linear-gradient(135deg,#8b5e44,#a3745b);padding:24px 32px;">
+        <h2 style="margin:0;color:#fff;font-size:20px;">New Appointment Request</h2>
         <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:13px;">Clinique Dentaire D'Urgence Angus-Maisonneuve</p>
       </div>
       <div style="padding:32px;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
           <tr><td style="padding:10px 0;color:rgba(255,255,255,0.5);width:130px;">Name</td><td style="padding:10px 0;color:#fff;font-weight:600;">${submission.firstName} ${submission.lastName}</td></tr>
-          <tr style="border-top:1px solid rgba(255,255,255,0.08)"><td style="padding:10px 0;color:rgba(255,255,255,0.5);">Phone</td><td style="padding:10px 0;color:#14a3a8;font-weight:600;">${submission.phone}</td></tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.08)"><td style="padding:10px 0;color:rgba(255,255,255,0.5);">Phone</td><td style="padding:10px 0;color:#a3745b;font-weight:600;">${submission.phone}</td></tr>
           <tr style="border-top:1px solid rgba(255,255,255,0.08)"><td style="padding:10px 0;color:rgba(255,255,255,0.5);">Email</td><td style="padding:10px 0;color:#fff;">${submission.email || '—'}</td></tr>
-          <tr style="border-top:1px solid rgba(255,255,255,0.08)"><td style="padding:10px 0;color:rgba(255,255,255,0.5);">Service</td><td style="padding:10px 0;color:#c8a96e;">${submission.service || '—'}</td></tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.08)"><td style="padding:10px 0;color:rgba(255,255,255,0.5);">Service</td><td style="padding:10px 0;color:#a3745b;">${submission.service || '—'}</td></tr>
           <tr style="border-top:1px solid rgba(255,255,255,0.08)"><td style="padding:10px 0;color:rgba(255,255,255,0.5);vertical-align:top;">Message</td><td style="padding:10px 0;color:rgba(255,255,255,0.85);line-height:1.6;">${(submission.message || '—').replace(/\n/g,'<br>')}</td></tr>
         </table>
         <div style="margin-top:24px;padding:16px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:12px;color:rgba(255,255,255,0.4);">
@@ -70,7 +68,7 @@ async function sendConfirmationEmail(submission) {
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
-      <div style="background:linear-gradient(135deg,#0d7377,#14a3a8);padding:32px;border-radius:12px 12px 0 0;text-align:center;">
+      <div style="background:linear-gradient(135deg,#8b5e44,#a3745b);padding:32px;border-radius:12px 12px 0 0;text-align:center;">
         <h1 style="margin:0;color:#fff;font-size:24px;">Thank You, ${submission.firstName}!</h1>
         <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);">Your message has been received</p>
       </div>
@@ -78,7 +76,7 @@ async function sendConfirmationEmail(submission) {
         <p style="color:#2c3e50;line-height:1.7;">We've received your appointment request and will contact you shortly at <strong>${submission.phone}</strong>.</p>
         <p style="color:#2c3e50;line-height:1.7;">For dental emergencies requiring immediate attention, please call us directly:</p>
         <div style="text-align:center;margin:24px 0;">
-          <a href="tel:5144371299" style="display:inline-block;background:linear-gradient(135deg,#0d7377,#14a3a8);color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:600;font-size:18px;">(514)-437-1299</a>
+          <a href="tel:5144371299" style="display:inline-block;background:linear-gradient(135deg,#8b5e44,#a3745b);color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:600;font-size:18px;">(514)-437-1299</a>
         </div>
         <p style="color:#6b7280;font-size:13px;margin-top:24px;">Clinique Dentaire D'Urgence Angus-Maisonneuve<br/>2933 Sherbrooke est, Montreal, Quebec H1W1B2</p>
       </div>
@@ -102,10 +100,10 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: errors[0], errors });
   }
 
-  const ipAddress = req.ip || req.connection.remoteAddress;
+  const ipAddress = req.headers['x-forwarded-for'] || req.ip || req.connection?.remoteAddress;
 
   try {
-    const result = queries.insert({
+    const result = await queries.insert({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       phone: phone.trim(),
@@ -117,7 +115,7 @@ router.post('/', async (req, res) => {
 
     const submission = { firstName, lastName, phone, email, service, message };
 
-    // Send emails (non-blocking — don't fail the response if email fails)
+    // Send emails (non-blocking)
     Promise.all([
       sendNotificationEmail(submission).catch(err => console.error('Notification email error:', err)),
       sendConfirmationEmail(submission).catch(err => console.error('Confirmation email error:', err))
