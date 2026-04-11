@@ -2,7 +2,7 @@
   "name": "clinique-dentaire-angus",
   "version": "1.0.0",
   "description": "Fullstack website for Clinique Dentaire D'Urgence Angus-Maisonneuve",
-  "main": "server.js",
+  "main": "api/index.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
