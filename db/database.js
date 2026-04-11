@@ -1,140 +1,143 @@
-const { createClient } = require('@libsql/client');
+const { createClient } = require('@supabase/supabase-js');
 
-let client;
+let supabase;
 
 function getClient() {
-  if (!client) {
-    client = createClient({
-      url: process.env.TURSO_DATABASE_URL || 'file:data/clinic.db',
-      authToken: process.env.TURSO_AUTH_TOKEN || undefined,
-    });
+  if (!supabase) {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
   }
-  return client;
+  return supabase;
 }
 
 async function ensureDb() {
-  const db = getClient();
-
-  await db.batch([
-    `CREATE TABLE IF NOT EXISTS submissions (
-      id          INTEGER PRIMARY KEY AUTOINCREMENT,
-      first_name  TEXT NOT NULL,
-      last_name   TEXT NOT NULL,
-      phone       TEXT NOT NULL,
-      email       TEXT,
-      service     TEXT,
-      message     TEXT,
-      status      TEXT NOT NULL DEFAULT 'new',
-      notes       TEXT,
-      ip_address  TEXT,
-      created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS admin_log (
-      id            INTEGER PRIMARY KEY AUTOINCREMENT,
-      action        TEXT NOT NULL,
-      submission_id INTEGER,
-      admin_user    TEXT,
-      details       TEXT,
-      created_at    DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS site_content (
-      "key"       TEXT PRIMARY KEY,
-      value       TEXT NOT NULL,
-      type        TEXT NOT NULL DEFAULT 'text',
-      updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`
-  ], 'write');
+  // Tables are created via Supabase SQL editor — just verify connection
+  const { error } = await getClient().from('submissions').select('id').limit(0);
+  if (error) throw new Error(`Database connection failed: ${error.message}`);
 }
 
 const queries = {
   async insert(data) {
-    const result = await getClient().execute({
-      sql: `INSERT INTO submissions (first_name, last_name, phone, email, service, message, ip_address)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      args: [data.firstName, data.lastName, data.phone,
-             data.email || null, data.service || null,
-             data.message || null, data.ipAddress || null]
-    });
-    return { lastInsertRowid: Number(result.lastInsertRowid) };
+    const { data: result, error } = await getClient()
+      .from('submissions')
+      .insert({
+        first_name: data.firstName,
+        last_name: data.lastName,
+        phone: data.phone,
+        email: data.email || null,
+        service: data.service || null,
+        message: data.message || null,
+        ip_address: data.ipAddress || null
+      })
+      .select('id')
+      .single();
+    if (error) throw error;
+    return { lastInsertRowid: result.id };
   },
 
   async getAll(status) {
     const db = getClient();
+    let query = db.from('submissions').select('*').order('created_at', { ascending: false });
     if (status && status !== 'all') {
-      const result = await db.execute({
-        sql: 'SELECT * FROM submissions WHERE status = ? ORDER BY created_at DESC',
-        args: [status]
-      });
-      return result.rows;
+      query = query.eq('status', status);
     }
-    const result = await db.execute('SELECT * FROM submissions ORDER BY created_at DESC');
-    return result.rows;
+    const { data, error } = await query;
+    if (error) throw error;
+    return data;
   },
 
   async getById(id) {
-    const result = await getClient().execute({
-      sql: 'SELECT * FROM submissions WHERE id = ?',
-      args: [id]
-    });
-    return result.rows[0] || null;
+    const { data, error } = await getClient()
+      .from('submissions')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error && error.code === 'PGRST116') return null; // not found
+    if (error) throw error;
+    return data;
   },
 
   async updateStatus(id, status, notes) {
-    return getClient().execute({
-      sql: `UPDATE submissions SET status = ?, notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      args: [status, notes !== undefined ? notes : null, id]
-    });
+    const { error } = await getClient()
+      .from('submissions')
+      .update({
+        status,
+        notes: notes !== undefined ? notes : null,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+    if (error) throw error;
   },
 
   async delete(id) {
-    return getClient().execute({
-      sql: 'DELETE FROM submissions WHERE id = ?',
-      args: [id]
-    });
+    const { error } = await getClient()
+      .from('submissions')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
   },
 
   async getStats() {
     const db = getClient();
-    const exec = async (sql, ...args) => {
-      const r = await db.execute({ sql, args });
-      return r.rows[0];
+    const count = async (filter) => {
+      let query = db.from('submissions').select('*', { count: 'exact', head: true });
+      if (filter) query = filter(query);
+      const { count: c, error } = await query;
+      if (error) throw error;
+      return c;
     };
+
+    const today = new Date().toISOString().slice(0, 10);
+
     return {
-      total:     (await exec("SELECT COUNT(*) as c FROM submissions")).c,
-      new:       (await exec("SELECT COUNT(*) as c FROM submissions WHERE status = ?", 'new')).c,
-      contacted: (await exec("SELECT COUNT(*) as c FROM submissions WHERE status = ?", 'contacted')).c,
-      resolved:  (await exec("SELECT COUNT(*) as c FROM submissions WHERE status = ?", 'resolved')).c,
-      today:     (await exec("SELECT COUNT(*) as c FROM submissions WHERE date(created_at) = date('now')")).c,
+      total:     await count(),
+      new:       await count(q => q.eq('status', 'new')),
+      contacted: await count(q => q.eq('status', 'contacted')),
+      resolved:  await count(q => q.eq('status', 'resolved')),
+      today:     await count(q => q.gte('created_at', today + 'T00:00:00').lt('created_at', today + 'T23:59:59.999')),
     };
   },
 
   async logAction(action, submissionId, adminUser, details) {
-    return getClient().execute({
-      sql: `INSERT INTO admin_log (action, submission_id, admin_user, details) VALUES (?, ?, ?, ?)`,
-      args: [action, submissionId, adminUser, details]
-    });
+    const { error } = await getClient()
+      .from('admin_log')
+      .insert({
+        action,
+        submission_id: submissionId,
+        admin_user: adminUser,
+        details
+      });
+    if (error) throw error;
   },
 
   async getAllContent() {
-    const result = await getClient().execute('SELECT "key", value, type FROM site_content');
-    return result.rows;
+    const { data, error } = await getClient()
+      .from('site_content')
+      .select('key, value, type');
+    if (error) throw error;
+    return data;
   },
 
   async setContent(key, value, type = 'text') {
-    return getClient().execute({
-      sql: `INSERT INTO site_content ("key", value, type, updated_at)
-            VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-            ON CONFLICT("key") DO UPDATE SET value = excluded.value, type = excluded.type, updated_at = CURRENT_TIMESTAMP`,
-      args: [key, value, type]
-    });
+    const { error } = await getClient()
+      .from('site_content')
+      .upsert({
+        key,
+        value,
+        type,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'key' });
+    if (error) throw error;
   },
 
   async deleteContent(key) {
-    return getClient().execute({
-      sql: 'DELETE FROM site_content WHERE "key" = ?',
-      args: [key]
-    });
+    const { error } = await getClient()
+      .from('site_content')
+      .delete()
+      .eq('key', key);
+    if (error) throw error;
   }
 };
 
