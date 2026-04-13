@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clinique Dentaire D'Urgence Angus-Maisonneuve | Montreal Emergency Dentist</title>
-  <meta name="description" content="Dental clinic in Montreal. Open 7 days a week with extended hours. Emergency dental care available. Call (514)-437-1299." />
+  <title>Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve | Montreal Emergency Dentist</title>
+  <meta name="description" content="Dental clinic in Montreal. Open 7 days a week. Emergency dental care available. Call (514)-437-1299." />
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="apple-touch-icon" href="/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -705,92 +705,140 @@
     }
     .services-header {
       max-width: 1200px;
-      margin: 0 auto 4rem;
+      margin: 0 auto 3rem;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
     }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5px;
+    .services-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      max-width: 1200px;
+      margin: 0 auto 2.5rem;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .services-tab {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      padding: 0.75rem 1.2rem;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: all 0.3s;
+      white-space: nowrap;
+      position: relative;
+    }
+    .services-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--bronze);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .services-tab:hover { color: var(--white); }
+    .services-tab.active { color: var(--bronze-light); }
+    .services-tab.active::after { transform: scaleX(1); }
+    .services-panel {
+      display: none;
       max-width: 1200px;
       margin: 0 auto;
-      background: rgba(255,255,255,0.05);
       border-radius: 12px;
       overflow: hidden;
+      animation: panelFadeIn 0.35s ease;
     }
-    .service-card {
-      background: var(--navy-mid);
-      padding: 2.2rem 1.8rem;
+    @keyframes panelFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .services-panel.active { display: block; }
+    .svc-hero {
       position: relative;
-      transition: background 0.4s, transform 0.3s;
-      cursor: pointer;
+      height: 300px;
       overflow: hidden;
+      background: var(--navy-mid);
     }
-    .service-card::before {
+    .svc-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .svc-hero::after {
       content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--navy-mid) 0%, rgba(21,44,58,0.5) 50%, rgba(21,44,58,0.15) 100%);
+    }
+    .svc-hero-text {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--bronze-dark), var(--bronze));
-      transform: scaleX(0);
-      transition: transform 0.4s;
-      transform-origin: left;
+      padding: 2rem 2.5rem;
+      z-index: 1;
     }
-    .service-card:hover { background: var(--navy-light); }
-    .service-card:hover::before { transform: scaleX(1); }
-    .service-card:hover .service-icon { transform: scale(1.1) rotate(-5deg); }
-    .service-num {
+    .svc-hero-text .svc-num {
       font-family: var(--font-display);
-      font-size: 2.5rem;
+      font-size: 3.5rem;
       font-weight: 300;
-      color: rgba(163,116,91,0.15);
+      color: rgba(163,116,91,0.25);
       line-height: 1;
-      margin-bottom: 0.8rem;
+      position: absolute;
+      top: -1rem;
+      right: 2.5rem;
     }
-    .service-icon {
-      width: 44px;
-      height: 44px;
-      color: var(--bronze);
-      margin-bottom: 1.2rem;
-      transition: transform 0.4s;
-    }
-    .service-card h3 {
+    .svc-hero-text h3 {
       font-family: var(--font-display);
-      font-size: 1.1rem;
+      font-size: 2rem;
       font-weight: 500;
       color: var(--white);
-      margin-bottom: 0.7rem;
-      line-height: 1.3;
-      letter-spacing: 0.01em;
+      line-height: 1.2;
     }
-    .service-card p {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-      line-height: 1.6;
+    .svc-body {
+      background: var(--navy-mid);
+      padding: 2rem 2.5rem 2.5rem;
     }
-    .service-card .service-arrow {
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 28px;
-      height: 28px;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 50%;
+    .svc-body > p {
+      color: rgba(255,255,255,0.55);
+      line-height: 1.75;
+      font-size: 0.9rem;
+      margin-bottom: 1.8rem;
+      max-width: 700px;
+    }
+    .svc-bullets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 3rem;
+      list-style: none;
+      padding: 0;
+      margin: 0 0 2rem;
+    }
+    .svc-bullets li {
+      color: rgba(255,255,255,0.72);
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.88rem;
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: rgba(255,255,255,0.3);
-      transition: all 0.3s;
+      gap: 0.75rem;
     }
-    .service-card:hover .service-arrow {
-      border-color: var(--bronze);
-      color: var(--bronze);
-      background: rgba(163,116,91,0.1);
+    .svc-bullets li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--bronze);
+      flex-shrink: 0;
     }
+    .svc-body .svc-cta { display: inline-block; }
 
     /* Teeth Animation Section */
     .teeth-anim-section {
@@ -1417,7 +1465,10 @@
       .about-visual { display: none; }
       .services { padding: 5rem 2rem; }
       .services-header { flex-direction: column; align-items: flex-start; gap: 2rem; }
-      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .services-tabs { overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .services-tabs::-webkit-scrollbar { display: none; }
+      .svc-hero { height: 240px; }
+      .svc-bullets { grid-template-columns: 1fr; }
       .teeth-anim-section { flex-direction: column; padding: 5rem 2rem; gap: 3rem; }
       .doctors { padding: 5rem 2rem; }
       .doctors-grid { grid-template-columns: repeat(3, 1fr); }
@@ -1431,7 +1482,6 @@
       footer { padding: 3rem 2rem 2rem; }
       .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
       .hours-section { padding: 5rem 2rem; }
-      .hours-grid { grid-template-columns: 1fr; gap: 3rem; }
     }
     @media (max-width: 768px) {
       .nav-links { display: none; }
@@ -1439,7 +1489,9 @@
       .mobile-menu { display: flex; }
       .mobile-only-lang { display: block !important; }
       .hero-stats { flex-wrap: wrap; gap: 1.5rem; bottom: 2rem; }
-      .services-grid { grid-template-columns: 1fr; }
+      .services-tab { padding: 0.5rem 0.9rem; font-size: 0.72rem; }
+      .svc-hero { height: 200px; }
+      .svc-body { padding: 1.5rem; }
       .doctors-grid { grid-template-columns: repeat(2, 1fr); }
       .form-row { grid-template-columns: 1fr; }
       .btn-primary, .btn-secondary, .form-submit, .service-card, .doctor-card, .tooth-anim {
@@ -1447,6 +1499,9 @@
       }
       .form-group input, .form-group textarea { cursor: text; }
       .footer-bottom { flex-direction: column; gap: 0.8rem; text-align: center; }
+      .hours-row { padding: 0.8rem 1.2rem; }
+      .hours-day, .hours-time { font-size: 0.78rem; }
+      .hours-time { white-space: nowrap; }
       .hero-actions { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
       .map-overlay-card { display: none; }
     }
@@ -1454,7 +1509,9 @@
       nav { padding: 1rem 1.2rem; }
       .hero { padding: 0 1.2rem; padding-top: 5rem; min-height: 100svh; }
       .hero-stats { display: none; }
-      .services-grid { grid-template-columns: 1fr; }
+      .svc-hero { height: 180px; }
+      .svc-hero-text h3 { font-size: 1.4rem; }
+      .svc-body { padding: 1.2rem; }
       .doctors-grid { grid-template-columns: 1fr; }
       .testimonial-card { min-width: 280px; max-width: 280px; }
       .contact { padding: 4rem 1.2rem; }
@@ -1465,6 +1522,9 @@
       .dr-feature { padding: 4rem 1.2rem; }
       .testimonials { padding: 4rem 1.2rem; }
       .hours-section { padding: 4rem 1.2rem; }
+      .hours-row { padding: 0.75rem 1rem; }
+      .hours-day { font-size: 0.75rem; min-width: 0; }
+      .hours-time { font-size: 0.75rem; text-align: right; white-space: nowrap; }
       .map-section { padding: 1.2rem 1.2rem 3rem; }
       footer { padding: 3rem 1.2rem 2rem; }
       .contact-form { padding: 1.5rem; }
@@ -1481,6 +1541,7 @@
     .hours-section {
       background: var(--navy-mid);
       padding: 5rem 4rem;
+      overflow: hidden;
     }
     .hours-grid {
       display: grid;
@@ -1496,6 +1557,8 @@
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.07);
+      min-width: 0;
+      max-width: 100%;
     }
     .hours-row {
       display: flex;
@@ -1525,16 +1588,20 @@
       line-height: 1.7;
       margin: 1.5rem 0;
     }
+    @media (max-width: 1100px) {
+      .hours-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .hours-grid > * { min-width: 0; }
+    }
   </style>
 </head>
 <body>
   <!-- Navigation -->
   <nav id="nav">
     <a href="#" class="nav-logo">
-      <img class="nav-logo-icon" src="/logo.png" alt="Clinique Dentaire Angus Logo" />
+      <img class="nav-logo-icon" src="/logo.png" alt="Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve Logo" />
       <div class="nav-logo-text">
-        Clinique Dentaire Angus
-        <span>D'Urgence · Maisonneuve</span>
+        Clinique Dentaire D'Urgence et Familiale
+        <span>Angus-Maisonneuve</span>
       </div>
     </a>
     <ul class="nav-links">
@@ -1608,7 +1675,7 @@
         <em>Beautiful Smile</em>
       </h1>
       <p class="hero-subtitle" data-editable="hero-subtitle">
-        Welcome to Clinique Dentaire D'Urgence Angus-Maisonneuve — where personalized dental care meets genuine compassion. Open 7 days a week with extended hours.
+        Welcome to Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve — where personalized dental care meets genuine compassion. Open 7 days a week.
       </p>
       <div class="hero-actions">
         <a href="#contact" class="btn-primary" data-editable="hero-btn-primary">Book an Appointment</a>
@@ -1625,7 +1692,7 @@
       <div class="tooth-container">
         <div class="tooth-glow"></div>
         <!-- Hero Logo -->
-        <img class="hero-logo-img" src="/logo.png" alt="Clinique Dentaire Angus" data-editable-img="hero-logo" />
+        <img class="hero-logo-img" src="/logo.png" alt="Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve" data-editable-img="hero-logo" />
       </div>
     </div>
 
@@ -1658,7 +1725,7 @@
       <div class="emergency-icon">🦷</div>
       <div>
         <h3 data-editable="emergency-title">Dental Emergency? We're Here for You</h3>
-        <p data-editable="emergency-subtitle">Extended hours · Open weekends · Serving Greater Montreal</p>
+        <p data-editable="emergency-subtitle">Open 7 days a week · Including weekends · Serving Greater Montreal</p>
       </div>
     </div>
     <a href="tel:5144371299" class="emergency-phone" data-editable="emergency-phone">(514)-437-1299</a>
@@ -1671,7 +1738,7 @@
         <div class="section-label" data-editable="about-label">Who We Are</div>
         <h2 class="section-title" data-editable="about-title">We Care for <em>You</em></h2>
         <div class="about-text">
-          <p data-editable="about-text-1">Welcome to Clinique Dentaire D'Urgence Angus-Maisonneuve. We are proud to provide personalized care tailored to your unique needs. We want to understand and maintain your oral health through listening and a truly client-centered approach.</p>
+          <p data-editable="about-text-1">Welcome to Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve. We are proud to provide personalized care tailored to your unique needs. We want to understand and maintain your oral health through listening and a truly client-centered approach.</p>
           <p data-editable="about-text-2">Our clinic's reputation is built on the commitment of our team members — properly informing patients and ensuring every step of the treatment plan is clearly understood. You will receive outstanding care throughout your treatment.</p>
         </div>
         <div class="about-values">
@@ -1699,8 +1766,8 @@
               <polyline points="12 6 12 12 16 14"/>
             </svg>
             <div class="about-value-text">
-              <h4 data-editable="about-val-3-title">Extended Hours &amp; Weekends</h4>
-              <p data-editable="about-val-3-text">We are available when you need us most — including evenings, weekends, and emergency situations.</p>
+              <h4 data-editable="about-val-3-title">Open 7 Days a Week</h4>
+              <p data-editable="about-val-3-text">We are available when you need us most — including weekends and emergency situations.</p>
             </div>
           </div>
         </div>
@@ -1807,163 +1874,218 @@
       </div>
       <p style="color:rgba(255,255,255,0.5); font-size:0.9rem; max-width:320px; line-height:1.7; text-align:right;" data-editable="services-subtitle">We have all your dental needs covered — from emergency care to cosmetic transformations.</p>
     </div>
-    <div class="services-grid reveal">
-      <div class="service-card">
-        <div class="service-num">01</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          <path d="M12 8v4M12 16h.01"/>
-        </svg>
-        <h3 data-editable="svc-1-title">Emergency Services</h3>
-        <p data-editable="svc-1-text">Severe pain, broken teeth, or urgent dental needs — we're here when you need us most, 7 days a week.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+
+    <div class="services-tabs reveal">
+      <button class="services-tab active" data-tab="cosmetic">Cosmetic Dentistry</button>
+      <button class="services-tab" data-tab="exams">Exams &amp; Cleaning</button>
+      <button class="services-tab" data-tab="emergency">Emergency</button>
+      <button class="services-tab" data-tab="fillings">Fillings &amp; Crowns</button>
+      <button class="services-tab" data-tab="rootcanals">Root Canals</button>
+      <button class="services-tab" data-tab="implants">Implants &amp; Crowns</button>
+      <button class="services-tab" data-tab="tmd">TMD / Jaw Joint Pain</button>
+      <button class="services-tab" data-tab="dentures">Dentures &amp; Prosthesis</button>
+      <button class="services-tab" data-tab="surgery">Surgery &amp; Grafts</button>
+      <button class="services-tab" data-tab="pediatric">Pediatric Dentistry</button>
+    </div>
+
+    <!-- 1 -->
+    <div class="services-panel active" data-panel="cosmetic">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=1200&h=400&fit=crop&q=80" alt="Cosmetic dentistry — beautiful smile" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">01</span><h3>Cosmetic Dentistry</h3></div>
       </div>
-      <div class="service-card">
-        <div class="service-num">02</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <rect x="2" y="3" width="20" height="14" rx="2"/>
-          <path d="M8 21h8M12 17v4"/>
-          <path d="M7 7h4M7 11h10"/>
-        </svg>
-        <h3 data-editable="svc-2-title">Digital Radiographs</h3>
-        <p data-editable="svc-2-text">State-of-the-art dental X-rays to detect damage and disease invisible to the naked eye.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">03</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-        <h3 data-editable="svc-3-title">Preventive Treatment</h3>
-        <p data-editable="svc-3-text">General cleanings, checkups, and oral health assessments. Preserve your natural smile for years to come.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">04</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-          <path d="M9 9h.01M15 9h.01"/>
-        </svg>
-        <h3 data-editable="svc-4-title">Cosmetic Dentistry</h3>
-        <p data-editable="svc-4-text">Bridges, whitening, reshaping, inlays and onlays. Transform your smile with the latest techniques.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">05</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M12 2a10 10 0 1 0 10 10"/>
-          <path d="M12 6v6l4 2"/>
-          <path d="M16 2l6 6-6 6"/>
-        </svg>
-        <h3 data-editable="svc-5-title">Periodontal Disease</h3>
-        <p data-editable="svc-5-text">Specialists in gum health. 3 in 4 people suffer from some type of periodontal disease — get monitored regularly.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">06</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M12 22V12"/>
-          <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
-          <path d="M12 2a6 6 0 0 1 6 6v4H6V8a6 6 0 0 1 6-6z"/>
-        </svg>
-        <h3 data-editable="svc-6-title">Root Canals</h3>
-        <p data-editable="svc-6-text">Treatment when soft tissue becomes inflamed. Effective removal of diseased areas with proper sealing and care.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">07</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 12h8M12 8v8"/>
-        </svg>
-        <h3 data-editable="svc-7-title">Extractions</h3>
-        <p data-editable="svc-7-text">Safe, comfortable tooth removal due to disease, trauma or crowding — fully anesthetized and stress-free.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">08</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <rect x="3" y="8" width="18" height="12" rx="3"/>
-          <path d="M3 12h18"/>
-          <path d="M8 8V6a2 2 0 0 1 4 0v2"/>
-          <path d="M12 8V6a2 2 0 0 1 4 0v2"/>
-        </svg>
-        <h3 data-editable="svc-8-title">Crowns &amp; Bridges</h3>
-        <p data-editable="svc-8-text">Bridge gaps and strengthen teeth with precision-crafted prosthetics designed to look and feel completely natural.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">09</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-          <line x1="9" y1="9" x2="9.01" y2="9" stroke-width="3" stroke-linecap="round"/>
-          <line x1="15" y1="9" x2="15.01" y2="9" stroke-width="3" stroke-linecap="round"/>
-        </svg>
-        <h3 data-editable="svc-9-title">Teeth Whitening</h3>
-        <p data-editable="svc-9-text">Professional whitening that goes beyond regular cleanings — achieve the brighter, more radiant smile you deserve.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">10</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-          <path d="M2 17l10 5 10-5"/>
-          <path d="M2 12l10 5 10-5"/>
-        </svg>
-        <h3 data-editable="svc-10-title">Orthodontics</h3>
-        <p data-editable="svc-10-text">Invisalign services for straighter teeth and improved bite. Early orthodontic care sets you up for a lifetime smile.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">11</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M2 12c0-5.5 4.5-10 10-10s10 4.5 10 10"/>
-          <path d="M5 17c0-3.9 3.1-7 7-7s7 3.1 7 7"/>
-          <path d="M8 21h8"/>
-        </svg>
-        <h3 data-editable="svc-11-title">Dentures</h3>
-        <p data-editable="svc-11-text">Removable appliances replacing missing teeth — restoring both the appearance and function of your natural smile.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </div>
-      <div class="service-card">
-        <div class="service-num">12</div>
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="8" r="5"/>
-          <path d="M8 8c0-2.2 1.8-4 4-4"/>
-          <path d="M7 20l1-8h8l1 8"/>
-          <path d="M10 20h4"/>
-        </svg>
-        <h3 data-editable="svc-12-title">Dental Implants</h3>
-        <p data-editable="svc-12-text">Permanently replace damaged or missing teeth. Modern implants look, feel, and function just like real teeth.</p>
-        <div class="service-arrow">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+      <div class="svc-body">
+        <p>Special care is put into creating natural and beautiful looking smiles. We combine artistry with the latest dental techniques.</p>
+        <ul class="svc-bullets">
+          <li>Veneers</li>
+          <li>Esthetic white restorations</li>
+          <li>Esthetic E.Max, Empress, Captek crowns</li>
+          <li>Full mouth rehab</li>
+          <li>Smile makeover</li>
+          <li>Teeth whitening</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
       </div>
     </div>
+
+    <!-- 2 -->
+    <div class="services-panel" data-panel="exams">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=1200&h=400&fit=crop&q=80" alt="Dentist reviewing dental X-rays" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">02</span><h3>Exams and Cleaning</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>Our philosophy is to treat our patients with care, listen to their concerns, and provide thorough examinations using modern diagnostic tools.</p>
+        <ul class="svc-bullets">
+          <li>Thorough clinical exam</li>
+          <li>Digital radiographs</li>
+          <li>DSLR and digital photography</li>
+          <li>Tar and stain removal and caries prevention</li>
+          <li>Fix bad breath and desensitize teeth</li>
+          <li>Consultations and second opinions</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="services-panel" data-panel="emergency">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1489710437720-ebb67ec84dd2?w=1200&h=400&fit=crop&q=80" alt="Emergency dental care" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">03</span><h3>Emergency Treatment</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>We are available by phone and prioritize next-day emergency appointments. Dental pain shouldn't wait — we're open 7 days a week.</p>
+        <ul class="svc-bullets">
+          <li>Next day emergency exams</li>
+          <li>Emergency extractions</li>
+          <li>Emergency root canals</li>
+          <li>Fixing chipped front tooth</li>
+          <li>Dental trauma and lost tooth</li>
+          <li>Pain management</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="services-panel" data-panel="fillings">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=1200&h=400&fit=crop&q=80" alt="Dentist explaining fillings procedure to patient" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">04</span><h3>Fillings and Crowns</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>When a cavity forms from decay, it needs to be restored to prevent further damage. We offer a full range of filling and crown options.</p>
+        <ul class="svc-bullets">
+          <li>Durable and strong white fillings</li>
+          <li>Beautiful and natural composite fillings</li>
+          <li>Gold and ceramic onlays and inlays</li>
+          <li>Porcelain fused to metal crowns</li>
+          <li>All Ceramic and Zirconia crowns</li>
+          <li>Metal alloy fillings</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="services-panel" data-panel="rootcanals">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1606265752439-1f18756aa5fc?w=1200&h=400&fit=crop&q=80" alt="Dentist holding dental tools for root canal" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">05</span><h3>Root Canal Treatment</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>When a tooth's pulp becomes infected or inflamed, root canal therapy can save the tooth and relieve pain.</p>
+        <ul class="svc-bullets">
+          <li>Diagnosis of cause of pain</li>
+          <li>Emergency pain treatment</li>
+          <li>Intervisit medication to soothe the pain</li>
+          <li>Standard root canal therapy</li>
+          <li>Save your own natural tooth</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="services-panel" data-panel="implants">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=1200&h=400&fit=crop&q=80" alt="Dental implant procedure and tools" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">06</span><h3>Implants and Crowns</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>Dental implants are the best permanent solution to replace a missing tooth. They look, feel, and function like your natural teeth.</p>
+        <ul class="svc-bullets">
+          <li>Single unit implant and crown</li>
+          <li>Multi-unit implants and crowns</li>
+          <li>Implant supported dentures</li>
+          <li>Full mouth crowns on implants</li>
+          <li>All-on-4</li>
+          <li>Hybrid dentures</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="services-panel" data-panel="tmd">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=400&fit=crop&q=80" alt="TMD jaw pain diagnosis" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">07</span><h3>TMD / Jaw Joint Pain</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>Does your jaw lock? Do you hear clicking or popping sounds? Do you wake up with jaw pain or headaches? We can help.</p>
+        <ul class="svc-bullets">
+          <li>Diagnosis of Temporomandibular joint disorders</li>
+          <li>Differentiation of pain</li>
+          <li>Treatment of TMD pain</li>
+          <li>Occlusal appliances</li>
+          <li>Mouth guard</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="services-panel" data-panel="dentures">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=1200&h=400&fit=crop&q=80" alt="Dentures and dental prosthetics" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">08</span><h3>Dentures and Prosthesis</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>Dentures are prosthetic devices designed to replace missing teeth. We create custom, natural-looking dentures that restore function and appearance.</p>
+        <ul class="svc-bullets">
+          <li>Natural looking dentures</li>
+          <li>Customised dentures</li>
+          <li>Partial dentures</li>
+          <li>Implant supported dentures</li>
+          <li>Implant retained dentures</li>
+          <li>All on 4</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="services-panel" data-panel="surgery">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=1200&h=400&fit=crop&q=80" alt="Oral surgery procedure" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">09</span><h3>Surgeries and Grafts</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>We offer comprehensive surgical procedures and stay current with the latest research and techniques for the best outcomes.</p>
+        <ul class="svc-bullets">
+          <li>Regular and wisdom tooth removal</li>
+          <li>Treat bad breath, gum and bone disease</li>
+          <li>Periodontal surgeries</li>
+          <li>Gum and bone grafts</li>
+          <li>Implant surgery</li>
+          <li>Cutting edge laser technology</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="services-panel" data-panel="pediatric">
+      <div class="svc-hero">
+        <img src="https://images.unsplash.com/photo-1514849302-984523450cf4?w=1200&h=400&fit=crop&q=80" alt="Pediatric dentistry — child dental care" loading="lazy" />
+        <div class="svc-hero-text"><span class="svc-num">10</span><h3>Pediatric Dentistry</h3></div>
+      </div>
+      <div class="svc-body">
+        <p>We love kids! We understand that visiting the dentist can be scary for children, and we focus on making every visit comfortable and fun.</p>
+        <ul class="svc-bullets">
+          <li>First dental visit</li>
+          <li>Baby teeth fillings</li>
+          <li>Local anesthesia for pain control</li>
+          <li>Stainless steel crowns</li>
+          <li>Space maintainers</li>
+          <li>Frenectomy</li>
+        </ul>
+        <a href="#contact" class="btn-primary svc-cta">Request an Appointment</a>
+      </div>
+    </div>
+
   </section>
 
   <!-- Animated Teeth Banner Section -->
@@ -1971,7 +2093,7 @@
     <div class="teeth-content reveal">
       <div class="section-label" data-editable="promise-label">Our Promise</div>
       <h2 class="section-title" data-editable="promise-title">Friendly Clinic <em>Near You</em></h2>
-      <p data-editable="promise-text">At Clinique Dentaire D'Urgence Angus-Maisonneuve, we've taken proactive steps to ensure patients and staff have a safe, clean environment. Dental pain prevents you from enjoying life — don't delay it further. We're open 7 days a week to help.</p>
+      <p data-editable="promise-text">At Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve, we've taken proactive steps to ensure patients and staff have a safe, clean environment. Dental pain prevents you from enjoying life — don't delay it further. We're open 7 days a week to help.</p>
       <a href="tel:5144371299" class="btn-primary" style="display:inline-block;" data-editable="promise-btn">Call (514)-437-1299</a>
     </div>
     <div class="teeth-row reveal reveal-delay-2">
@@ -2058,8 +2180,8 @@
     <div class="hours-grid">
       <div class="reveal">
         <div class="section-label" data-editable="hours-label">When We're Open</div>
-        <h2 class="section-title hours-title" data-editable="hours-title">Extended Hours, <em>Including Weekends</em></h2>
-        <p class="hours-subtitle" data-editable="hours-subtitle">We are open 7 days a week with extended hours — making us one of the most accessible dental offices across Greater Montreal.</p>
+        <h2 class="section-title hours-title" data-editable="hours-title">Open 7 Days, <em>Including Weekends</em></h2>
+        <p class="hours-subtitle" data-editable="hours-subtitle">We are open 7 days a week — making us one of the most accessible dental offices across Greater Montreal.</p>
         <a href="tel:5144371299" class="btn-primary" style="display:inline-block;" data-editable="hours-btn">Call for Appointment</a>
       </div>
       <div class="hours-table reveal reveal-delay-2">
@@ -2435,10 +2557,10 @@
         allowfullscreen=""
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        title="Clinique Dentaire Angus location map"
+        title="Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve location map"
       ></iframe>
       <div class="map-overlay-card">
-        <h4>Clinique Dentaire Angus</h4>
+        <h4>Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve</h4>
         <p>2933 Sherbrooke est<br/>Montreal, Quebec H1W1B2</p>
         <a href="https://maps.google.com/?q=2933+Sherbrooke+Est+Montreal+QC" target="_blank" rel="noopener">View on Google Maps →</a>
       </div>
@@ -2450,23 +2572,23 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="#" class="nav-logo" style="text-decoration:none;">
-          <img src="/logo.png" alt="Clinique Dentaire Angus Logo" width="36" height="36" style="object-fit:contain;" />
+          <img src="/logo.png" alt="Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve Logo" width="36" height="36" style="object-fit:contain;" />
           <div class="nav-logo-text">
-            Clinique Dentaire Angus
-            <span>D'Urgence · Maisonneuve</span>
+            Clinique Dentaire D'Urgence et Familiale
+            <span>Angus-Maisonneuve</span>
           </div>
         </a>
-        <p data-editable="footer-desc">Providing personalized, compassionate dental care to the Montreal community. Open 7 days a week with extended hours.</p>
+        <p data-editable="footer-desc">Providing personalized, compassionate dental care to the Montreal community. Open 7 days a week.</p>
       </div>
       <div class="footer-col">
         <h4 data-translate="footer-services">Services</h4>
         <ul>
-          <li><a href="#services" data-translate="footer-svc-1">Emergency Care</a></li>
-          <li><a href="#services" data-translate="footer-svc-2">Cosmetic Dentistry</a></li>
-          <li><a href="#services" data-translate="footer-svc-3">Root Canals</a></li>
-          <li><a href="#services" data-translate="footer-svc-4">Dental Implants</a></li>
-          <li><a href="#services" data-translate="footer-svc-5">Orthodontics</a></li>
-          <li><a href="#services" data-translate="footer-svc-6">Teeth Whitening</a></li>
+          <li><a href="#services" data-translate="footer-svc-1">Cosmetic Dentistry</a></li>
+          <li><a href="#services" data-translate="footer-svc-2">Exams & Cleaning</a></li>
+          <li><a href="#services" data-translate="footer-svc-3">Emergency Care</a></li>
+          <li><a href="#services" data-translate="footer-svc-4">Fillings & Crowns</a></li>
+          <li><a href="#services" data-translate="footer-svc-5">Root Canals</a></li>
+          <li><a href="#services" data-translate="footer-svc-6">Implants</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -2482,7 +2604,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p data-translate="footer-copy">© 2026 Clinique Dentaire d'Urgence Angus-Maisonneuve. All rights reserved.</p>
+      <p data-translate="footer-copy">© 2026 Clinique Dentaire d'Urgence et Familiale Angus-Maisonneuve. All rights reserved.</p>
       <a href="tel:5144371299" class="footer-phone">(514)-437-1299</a>
     </div>
   </footer>
@@ -2493,6 +2615,20 @@
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Services tabs
+    function switchServiceTab(tab) {
+      document.querySelectorAll('.services-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.services-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`[data-panel="${tab.dataset.tab}"]`).classList.add('active');
+    }
+    document.querySelectorAll('.services-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchServiceTab(tab));
+      tab.addEventListener('mouseenter', () => {
+        if (window.innerWidth > 768) switchServiceTab(tab);
+      });
     });
 
     // Mobile menu
@@ -2726,24 +2862,6 @@
         }
       });
     });
-
-    // Load saved site content overrides
-    (async function loadSiteContent() {
-      try {
-        const res = await fetch('/api/content');
-        if (!res.ok) return;
-        const content = await res.json();
-        for (const [key, entry] of Object.entries(content)) {
-          if (entry.type === 'image') {
-            const img = document.querySelector(`[data-editable-img="${key}"]`);
-            if (img) img.src = entry.value;
-          } else {
-            const el = document.querySelector(`[data-editable="${key}"]`);
-            if (el) el.innerHTML = entry.value;
-          }
-        }
-      } catch(e) { /* silent fail for visitors */ }
-    })();
 
   </script>
 </body>

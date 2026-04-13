@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
-const { queries } = require('../db/database');
 
 function validateContact(data) {
   const errors = [];
@@ -37,7 +36,7 @@ async function sendNotificationEmail(submission) {
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a1628;color:#fff;border-radius:12px;overflow:hidden;">
       <div style="background:linear-gradient(135deg,#8b5e44,#a3745b);padding:24px 32px;">
         <h2 style="margin:0;color:#fff;font-size:20px;">New Appointment Request</h2>
-        <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:13px;">Clinique Dentaire D'Urgence Angus-Maisonneuve</p>
+        <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:13px;">Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve</p>
       </div>
       <div style="padding:32px;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
@@ -55,7 +54,7 @@ async function sendNotificationEmail(submission) {
   `;
 
   await transporter.sendMail({
-    from: `"Clinique Angus Website" <${process.env.FROM_EMAIL}>`,
+    from: `"Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve" <${process.env.FROM_EMAIL}>`,
     to: process.env.NOTIFICATION_EMAIL,
     subject: `New Appointment Request — ${submission.firstName} ${submission.lastName}`,
     html
@@ -78,15 +77,15 @@ async function sendConfirmationEmail(submission) {
         <div style="text-align:center;margin:24px 0;">
           <a href="tel:5144371299" style="display:inline-block;background:linear-gradient(135deg,#8b5e44,#a3745b);color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:600;font-size:18px;">(514)-437-1299</a>
         </div>
-        <p style="color:#6b7280;font-size:13px;margin-top:24px;">Clinique Dentaire D'Urgence Angus-Maisonneuve<br/>2933 Sherbrooke est, Montreal, Quebec H1W1B2</p>
+        <p style="color:#6b7280;font-size:13px;margin-top:24px;">Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve<br/>2933 Sherbrooke est, Montreal, Quebec H1W1B2</p>
       </div>
     </div>
   `;
 
   await transporter.sendMail({
-    from: `"Clinique Dentaire Angus" <${process.env.FROM_EMAIL}>`,
+    from: `"Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve" <${process.env.FROM_EMAIL}>`,
     to: submission.email,
-    subject: 'We received your appointment request — Clinique Dentaire Angus',
+    subject: 'We received your appointment request — Clinique Dentaire D\'Urgence et Familiale Angus-Maisonneuve',
     html
   });
 }
@@ -100,36 +99,28 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: errors[0], errors });
   }
 
-  const ipAddress = req.headers['x-forwarded-for'] || req.ip || req.connection?.remoteAddress;
+  const submission = {
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
+    phone: phone.trim(),
+    email: email ? email.trim() : null,
+    service: service ? service.trim() : null,
+    message: message ? message.trim() : null
+  };
 
   try {
-    const result = await queries.insert({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      phone: phone.trim(),
-      email: email ? email.trim() : null,
-      service: service ? service.trim() : null,
-      message: message ? message.trim() : null,
-      ipAddress
-    });
-
-    const submission = { firstName, lastName, phone, email, service, message };
-
-    // Send emails (non-blocking)
     Promise.all([
       sendNotificationEmail(submission).catch(err => console.error('Notification email error:', err)),
       sendConfirmationEmail(submission).catch(err => console.error('Confirmation email error:', err))
     ]);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      id: result.lastInsertRowid,
       message: 'Your request has been received. We will contact you shortly.'
     });
-
   } catch (err) {
     console.error('Contact form error:', err);
-    res.status(500).json({ error: 'Failed to save your request. Please call us directly at (514)-437-1299.' });
+    res.status(500).json({ error: 'Failed to process your request. Please call us directly at (514)-437-1299.' });
   }
 });
 
