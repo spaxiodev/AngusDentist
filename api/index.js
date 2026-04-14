@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const rateLimit = require('express-rate-limit');
 
 const contactRoutes = require('../routes/contact');
@@ -25,13 +24,20 @@ const contactLimiter = rateLimit({
 });
 
 // ── Public content API ────────────────────────────────────────
-// GET /api/content — returns website content for front-end to apply
-const CONTENT_FILE = path.join(__dirname, '../db/content.json');
-
-app.get('/api/content', (req, res) => {
+// GET /api/content — returns website content from Supabase
+app.get('/api/content', async (req, res) => {
   try {
-    const data = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
-    res.json(data);
+    const sbRes = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/content?id=eq.1&select=data`,
+      {
+        headers: {
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+      }
+    );
+    const rows = await sbRes.json();
+    res.json(rows.length ? rows[0].data : { text: {}, images: {}, doctors: [], services: [], testimonials: [] });
   } catch {
     res.json({ text: {}, images: {}, doctors: [], services: [], testimonials: [] });
   }

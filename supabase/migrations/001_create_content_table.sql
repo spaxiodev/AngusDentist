@@ -1,0 +1,121 @@
+-- Create the content table (single-row, stores all site content as JSONB)
+CREATE TABLE IF NOT EXISTS content (
+  id INTEGER PRIMARY KEY DEFAULT 1,
+  data JSONB NOT NULL DEFAULT '{}',
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  CONSTRAINT single_row CHECK (id = 1)
+);
+
+-- Seed with initial content
+INSERT INTO content (id, data) VALUES (1, '{
+  "text": {
+    "nav-cta": "Book Now",
+    "hero-badge": "Emergency Dental Care · Montreal",
+    "hero-title": "A Better Life Starts with a<br/><em>Beautiful Smile</em>",
+    "hero-subtitle": "Welcome to Clinique Dentaire D''Urgence et Familiale Angus-Maisonneuve — where personalized dental care meets genuine compassion. Open 7 days a week.",
+    "hero-btn-primary": "Book an Appointment",
+    "hero-btn-secondary": "Our Services",
+    "stat-1-num": "7/7",
+    "stat-1-label": "Days Open",
+    "stat-2-num": "5",
+    "stat-2-label": "Dentists on Staff",
+    "stat-3-num": "12+",
+    "stat-3-label": "Services Offered",
+    "stat-4-num": "MTL",
+    "stat-4-label": "Greater Montreal",
+    "emergency-title": "Dental Emergency? We''re Here for You",
+    "emergency-subtitle": "Open 7 days a week · Including weekends · Serving Greater Montreal",
+    "emergency-phone": "(514)-437-1299",
+    "about-label": "Who We Are",
+    "about-title": "We Care for <em>You</em>",
+    "about-text-1": "Welcome to Clinique Dentaire D''Urgence et Familiale Angus-Maisonneuve. We are proud to provide personalized care tailored to your unique needs. We want to understand and maintain your oral health through listening and a truly client-centered approach.",
+    "about-text-2": "Our clinic''s reputation is built on the commitment of our team members — properly informing patients and ensuring every step of the treatment plan is clearly understood. You will receive outstanding care throughout your treatment.",
+    "about-val-1-title": "Patient-Centered Approach",
+    "about-val-1-text": "Every treatment plan is explained clearly and customized to your unique needs and concerns.",
+    "about-val-2-title": "Safe &amp; Clean Environment",
+    "about-val-2-text": "Proactive measures ensure patients and staff have a safe and hygienic environment for all dental needs.",
+    "about-val-3-title": "Open 7 Days a Week",
+    "about-val-3-text": "We are available when you need us most — including weekends and emergency situations.",
+    "promise-label": "Our Promise",
+    "promise-title": "Friendly Clinic <em>Near You</em>",
+    "promise-text": "At Clinique Dentaire D''Urgence et Familiale Angus-Maisonneuve, we''ve taken proactive steps to ensure patients and staff have a safe, clean environment. Dental pain prevents you from enjoying life — don''t delay it further. We''re open 7 days a week to help.",
+    "promise-btn": "Call (514)-437-1299",
+    "hours-label": "When We''re Open",
+    "hours-title": "Open 7 Days, <em>Including Weekends</em>",
+    "hours-subtitle": "We are open 7 days a week — making us one of the most accessible dental offices across Greater Montreal.",
+    "hours-btn": "Call for Appointment",
+    "hours-mon": "8:00 AM – 8:00 PM",
+    "hours-tue": "8:00 AM – 8:00 PM",
+    "hours-wed": "8:00 AM – 8:00 PM",
+    "hours-thu": "8:00 AM – 8:00 PM",
+    "hours-fri": "8:00 AM – 6:00 PM",
+    "hours-sat": "9:00 AM – 5:00 PM",
+    "hours-sun": "10:00 AM – 3:00 PM",
+    "hours-emergency": "(514)-437-1299",
+    "doctors-label": "Meet The Doctors",
+    "doctors-title": "Bringing Life to <em>Your Smile</em>",
+    "feature-label": "Committed to Excellence",
+    "feature-title": "We Create <em>Beautiful</em><br/>and Brighter Smiles",
+    "feature-bio-1": "Dr. Jitesh Patel has been working as a general dentist since graduating from McGill University in 2015. In addition to owning his own dental clinic, he practices mobile geriatric dentistry at various nursing homes around Montreal.",
+    "feature-bio-2": "He also works as a clinical instructor for the Faculty of Dentistry at McGill''s Oral Diagnostic Clinic and the Community Outreach Program, where he supervises dental students.",
+    "feature-bio-3": "Before practicing dentistry, Dr. Patel worked as an engineer for 17 years for Ericsson Canada Inc. After completing a Masters in Teaching Mathematics at Concordia University in 2008, he found his true calling — making a genuine difference in people''s lives through oral health care.",
+    "testimonials-label": "Happy Stories",
+    "testimonials-title": "Creating <em>Vibrant Smiles</em><br/>for Healthy Lifestyles",
+    "contact-label": "Contact Us",
+    "contact-title": "How to <em>Find Us</em>",
+    "contact-phone": "(514)-437-1299",
+    "contact-email": "clinique.angus@outlook.com",
+    "contact-address": "2933 Sherbrooke est",
+    "contact-city": "Montreal, Quebec H1W1B2",
+    "footer-desc": "Providing personalized, compassionate dental care to the Montreal community. Open 7 days a week.",
+    "footer-phone": "(514)-437-1299",
+    "footer-email": "clinique.angus@outlook.com",
+    "footer-address": "2933 Sherbrooke est, Montreal",
+    "footer-city": "Quebec, H1W1B2",
+    "footer-copy": "© 2026 Clinique Dentaire d''Urgence et Familiale Angus-Maisonneuve. All rights reserved.",
+    "services-label": "What We Offer",
+    "services-title": "Dentistry for <em>Today''s</em> Lifestyle",
+    "services-subtitle": "We cover all your dental needs — from emergency care to aesthetic transformations."
+  },
+  "images": {
+    "logo": "/logo.png"
+  },
+  "doctors": [
+    {"id": "doc-1", "name": "Dr. Jitesh Patel", "title": "D.M.D · Dentist", "photo": null},
+    {"id": "doc-2", "name": "Dr. Matthew Suen", "title": "D.M.D · Dentist", "photo": null},
+    {"id": "doc-3", "name": "Dr. Philippe Beaulieu", "title": "D.D.S · Dentist", "photo": null},
+    {"id": "doc-4", "name": "Dr. Krishnaa Siva", "title": "D.M.D · Dentist", "photo": null},
+    {"id": "doc-5", "name": "Suengjun Roh", "title": "D.D. · Denturologist", "photo": null}
+  ],
+  "services": [
+    {"id": "svc-1", "icon": null, "title": "Cosmetic Dentistry", "description": "Special care is taken to create natural and beautiful smiles. We combine artistry with the latest dental techniques.", "bullets": ["Veneers", "White Aesthetic Restorations", "E.Max, Empress, Captek Crowns", "Complete Rehabilitation", "Smile Transformation", "Teeth Whitening"]},
+    {"id": "svc-2", "icon": "/service-icons/exam_cleaning_icon.png", "title": "Exams & Cleaning", "description": "We treat our patients with care, listen to their concerns, and perform thorough examinations with modern diagnostic tools.", "bullets": ["Complete Clinical Exam", "Digital X-Rays", "Digital Photography", "Scaling & Stain Removal", "Bad Breath Treatment", "Consultations"]},
+    {"id": "svc-3", "icon": "/service-icons/emergency.png", "title": "Emergencies", "description": "We are available by phone and prioritize next-day emergency appointments. Dental pain should not wait.", "bullets": ["Next-Day Emergency Exams", "Emergency Extractions", "Emergency Root Canals", "Chipped Tooth Repair", "Dental Trauma", "Pain Management"]},
+    {"id": "svc-4", "icon": "/service-icons/Fillings_RestorationIcon.png", "title": "Fillings & Crowns", "description": "When a cavity forms, it needs to be restored. We offer a full range of filling and crown options.", "bullets": ["Durable White Fillings", "Natural Composite Fillings", "Gold & Ceramic Inlays", "Porcelain-Fused-to-Metal Crowns", "Ceramic & Zirconia Crowns", "Metal Alloy Fillings"]},
+    {"id": "svc-5", "icon": "/service-icons/rootCanal_icon.png", "title": "Root Canal Treatments", "description": "When a tooth''s pulp is infected or inflamed, root canal treatment can save the tooth and relieve pain.", "bullets": ["Diagnosis of Pain Cause", "Emergency Pain Treatment", "Medication Between Visits", "Standard Root Canal Treatment", "Preserve Your Natural Tooth"]},
+    {"id": "svc-6", "icon": null, "title": "Implants & Crowns", "description": "Dental implants are the best permanent solution for replacing a missing tooth. They look and function like natural teeth.", "bullets": ["Single Implant & Crown", "Multiple Implants", "Implant-Supported Dentures", "Full Crowns", "All-on-4", "Hybrid Dentures"]},
+    {"id": "svc-7", "icon": "/service-icons/TMJ_2_icon.png", "title": "TMD / Jaw Pain", "description": "Does your jaw lock? Do you hear clicking sounds? Do you wake up with jaw pain or headaches?", "bullets": ["TMD Disorder Diagnosis", "Pain Differentiation", "TMD Pain Treatment", "Occlusal Splints", "Mouth Guards"]},
+    {"id": "svc-8", "icon": "/service-icons/dentures_icon.png", "title": "Dentures", "description": "We create custom natural-looking dentures that restore both the appearance and function of your smile.", "bullets": ["Natural-Looking Dentures", "Custom Dentures", "Partial Dentures", "Implant-Supported Dentures", "Implant-Retained Dentures", "All on 4"]},
+    {"id": "svc-9", "icon": "/service-icons/surgery_Icon.png", "title": "Surgery & Grafts", "description": "We offer comprehensive surgical procedures and stay up-to-date with the latest research and techniques.", "bullets": ["Wisdom Tooth Extraction", "Gum & Bone Disease", "Periodontal Surgeries", "Gingival & Bone Grafts", "Implant Surgery", "Laser Technology"]},
+    {"id": "svc-10", "icon": "/service-icons/pediatric_icon.png", "title": "Pediatric Dentistry", "description": "We love kids! We focus on making every dental visit comfortable and fun for children of all ages.", "bullets": ["First Dental Visit", "Baby Teeth Fillings", "Local Anesthesia", "Stainless Steel Crowns", "Space Maintainers", "Frenectomy"]}
+  ],
+  "testimonials": [
+    {"id": "t1", "text": "\"Dr. Patel gave me great service as well as important information on my teeth. Looking forward to my next visit.\"", "author": "S O", "avatar": "SO", "tag": "Verified Patient"},
+    {"id": "t2", "text": "\"Dr. Patel is really kind and good. They accept emergency needs — I got my tooth removed and added a denture. The quality of work is great.\"", "author": "A S", "avatar": "AS", "tag": "Emergency Patient"},
+    {"id": "t3", "text": "\"Fantastic service — from the receptionist to the dentist and denturologist. For anyone who is afraid of dentists, highly recommended. Incredible service! Friendly and professional — 5 stars!\"", "author": "M L", "avatar": "ML", "tag": "Verified Patient"},
+    {"id": "t4", "text": "\"Excellent dentist, very patient with me being nervous. They had a same-day appointment for me without any trouble.\"", "author": "J R", "avatar": "JR", "tag": "Same-Day Appointment"},
+    {"id": "t5", "text": "\"Incredible service, very kind staff and a really nice atmosphere. Ignore the bad reviews — the establishment was owned by a different owner. Excellent place.\"", "author": "P T", "avatar": "PT", "tag": "Verified Patient"}
+  ]
+}'::jsonb)
+ON CONFLICT (id) DO NOTHING;
+
+-- Enable RLS
+ALTER TABLE content ENABLE ROW LEVEL SECURITY;
+
+-- Public read access (for the website)
+CREATE POLICY "Allow public read" ON content
+  FOR SELECT USING (true);
+
+-- Service role can do everything (for admin writes)
+CREATE POLICY "Allow service role write" ON content
+  FOR ALL USING (true) WITH CHECK (true);

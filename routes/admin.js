@@ -7,19 +7,42 @@ const jwt = require('jsonwebtoken');
 const { requireAuth, JWT_SECRET } = require('../middleware/auth');
 
 const VIEWS_DIR = path.join(__dirname, '../views/admin');
-const CONTENT_FILE = path.join(__dirname, '../db/content.json');
 const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
 
-function readContent() {
-  try {
-    return JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
-  } catch {
-    return { text: {}, images: {}, doctors: [], services: [], testimonials: [] };
-  }
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const DEFAULT_CONTENT = { text: {}, images: {}, doctors: [], services: [], testimonials: [] };
+
+async function readContent() {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/content?id=eq.1&select=data`,
+    {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+      },
+    }
+  );
+  const rows = await res.json();
+  return rows.length ? rows[0].data : DEFAULT_CONTENT;
 }
 
-function writeContent(data) {
-  fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), 'utf8');
+async function writeContent(content) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/content?id=eq.1`, {
+    method: 'PATCH',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({ data: content, updated_at: new Date().toISOString() }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error('Supabase write failed: ' + err);
+  }
 }
 
 // ── Page routes ─────────────────────────────────────────────
@@ -57,14 +80,19 @@ router.post('/api/logout', (req, res) => {
 // ── Content API ──────────────────────────────────────────────
 
 // GET /api/admin/content — full content (protected)
-router.get('/api/content', requireAuth, (req, res) => {
-  res.json(readContent());
+router.get('/api/content', requireAuth, async (req, res) => {
+  try {
+    const content = await readContent();
+    res.json(content);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // PUT /api/admin/content — save full content (protected)
-router.put('/api/content', requireAuth, express.json({ limit: '20mb' }), (req, res) => {
+router.put('/api/content', requireAuth, express.json({ limit: '20mb' }), async (req, res) => {
   try {
-    const current = readContent();
+    const current = await readContent();
     const incoming = req.body;
 
     // Merge carefully: only overwrite known top-level keys
@@ -74,7 +102,7 @@ router.put('/api/content', requireAuth, express.json({ limit: '20mb' }), (req, r
     if (Array.isArray(incoming.services)) current.services = incoming.services;
     if (Array.isArray(incoming.testimonials)) current.testimonials = incoming.testimonials;
 
-    writeContent(current);
+    await writeContent(current);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
