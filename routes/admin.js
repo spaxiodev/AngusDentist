@@ -4,192 +4,125 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const { queries } = require('../db/database');
 const { requireAuth, JWT_SECRET } = require('../middleware/auth');
 
-const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
 const VIEWS_DIR = path.join(__dirname, '../views/admin');
+const CONTENT_FILE = path.join(__dirname, '../db/content.json');
+const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
 
-// GET /admin/login — serve login page
-router.get('/login', (req, res) => {
-  const token = req.cookies?.admin_token;
-  if (token) {
-    try {
-      jwt.verify(token, JWT_SECRET);
-      return res.redirect('/admin');
-    } catch {}
+function readContent() {
+  try {
+    return JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
+  } catch {
+    return { text: {}, images: {}, doctors: [], services: [], testimonials: [] };
   }
+}
+
+function writeContent(data) {
+  fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), 'utf8');
+}
+
+// ── Page routes ─────────────────────────────────────────────
+
+// GET /admin/login
+router.get('/login', (req, res) => {
   res.sendFile(path.join(VIEWS_DIR, 'login.html'));
 });
 
-// POST /admin/login — authenticate
-router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
-  const { username, password } = req.body;
-  if (
-    username === (process.env.ADMIN_USERNAME || 'admin') &&
-    password === (process.env.ADMIN_PASSWORD || 'admin123')
-  ) {
-    const token = jwt.sign({ user: username }, JWT_SECRET, { expiresIn: '24h' });
-    res.cookie('admin_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production' || process.env.VERCEL === '1',
-      sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000
-    });
-    return res.redirect('/admin');
-  }
-  res.redirect('/admin/login?error=1');
-});
-
-// POST /admin/logout
-router.post('/logout', (req, res) => {
-  res.clearCookie('admin_token');
-  res.redirect('/admin/login');
-});
-
-// GET /admin — serve dashboard
-router.get('/', requireAuth, (req, res) => {
+// GET /admin — serve admin panel (auth checked client-side via localStorage JWT)
+router.get('/', (req, res) => {
   res.sendFile(path.join(VIEWS_DIR, 'index.html'));
 });
 
-// --- API routes (all protected) ---
+// ── Auth API ─────────────────────────────────────────────────
 
-// GET /admin/api/stats
-router.get('/api/stats', requireAuth, async (req, res) => {
-  try {
-    res.json(await queries.getStats());
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+// POST /api/admin/login
+router.post('/api/login', express.json(), (req, res) => {
+  const { username, password } = req.body || {};
+  const validUser = process.env.ADMIN_USERNAME || 'admin';
+  const validPass = process.env.ADMIN_PASSWORD || 'angus2024';
+
+  if (username === validUser && password === validPass) {
+    const token = jwt.sign({ user: username }, JWT_SECRET, { expiresIn: '24h' });
+    return res.json({ token });
   }
+  return res.status(401).json({ error: 'Invalid credentials' });
 });
 
-// GET /admin/api/submissions?status=new|contacted|resolved|all
-router.get('/api/submissions', requireAuth, async (req, res) => {
-  try {
-    const { status } = req.query;
-    const submissions = await queries.getAll(status);
-    res.json(submissions);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// POST /api/admin/logout  (just confirmation — client drops token)
+router.post('/api/logout', (req, res) => {
+  res.json({ success: true });
 });
 
-// GET /admin/api/submissions/:id
-router.get('/api/submissions/:id', requireAuth, async (req, res) => {
-  try {
-    const submission = await queries.getById(parseInt(req.params.id));
-    if (!submission) return res.status(404).json({ error: 'Not found' });
-    res.json(submission);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// ── Content API ──────────────────────────────────────────────
+
+// GET /api/admin/content — full content (protected)
+router.get('/api/content', requireAuth, (req, res) => {
+  res.json(readContent());
 });
 
-// PATCH /admin/api/submissions/:id
-router.patch('/api/submissions/:id', requireAuth, express.json(), async (req, res) => {
+// PUT /api/admin/content — save full content (protected)
+router.put('/api/content', requireAuth, express.json({ limit: '20mb' }), (req, res) => {
   try {
-    const { status, notes } = req.body;
-    const id = parseInt(req.params.id);
-    const existing = await queries.getById(id);
-    if (!existing) return res.status(404).json({ error: 'Not found' });
+    const current = readContent();
+    const incoming = req.body;
 
-    await queries.updateStatus(id, status || existing.status, notes !== undefined ? notes : existing.notes);
-    await queries.logAction('update_status', id, req.adminUser, `Status: ${status}, Notes: ${notes}`);
+    // Merge carefully: only overwrite known top-level keys
+    if (incoming.text && typeof incoming.text === 'object') current.text = incoming.text;
+    if (incoming.images && typeof incoming.images === 'object') current.images = incoming.images;
+    if (Array.isArray(incoming.doctors)) current.doctors = incoming.doctors;
+    if (Array.isArray(incoming.services)) current.services = incoming.services;
+    if (Array.isArray(incoming.testimonials)) current.testimonials = incoming.testimonials;
 
+    writeContent(current);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// DELETE /admin/api/submissions/:id
-router.delete('/api/submissions/:id', requireAuth, async (req, res) => {
+// ── Image Upload API ─────────────────────────────────────────
+
+// POST /api/admin/upload — upload image as base64 (protected)
+router.post('/api/upload', requireAuth, express.json({ limit: '20mb' }), (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    const existing = await queries.getById(id);
-    if (!existing) return res.status(404).json({ error: 'Not found' });
-
-    await queries.delete(id);
-    await queries.logAction('delete', id, req.adminUser, `Deleted: ${existing.first_name} ${existing.last_name}`);
-
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// --- Site Content API (inline editor) ---
-
-// GET /admin/api/content
-router.get('/api/content', requireAuth, async (req, res) => {
-  try {
-    const rows = await queries.getAllContent();
-    const content = {};
-    for (const row of rows) {
-      content[row.key] = { value: row.value, type: row.type };
-    }
-    res.json(content);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST /admin/api/content
-router.post('/api/content', requireAuth, express.json({ limit: '10mb' }), async (req, res) => {
-  try {
-    const { changes } = req.body;
-    if (!changes || typeof changes !== 'object') {
-      return res.status(400).json({ error: 'Invalid changes payload' });
-    }
-    for (const [key, entry] of Object.entries(changes)) {
-      if (typeof key !== 'string' || key.length > 500) continue;
-      await queries.setContent(key, entry.value, entry.type || 'text');
-    }
-    await queries.logAction('edit_site', null, req.adminUser, `Updated ${Object.keys(changes).length} content items`);
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST /admin/api/upload — upload an image
-router.post('/api/upload', requireAuth, express.json({ limit: '10mb' }), async (req, res) => {
-  try {
-    const { data, filename } = req.body;
-    if (!data || !filename) {
-      return res.status(400).json({ error: 'Missing data or filename' });
-    }
+    const { data, filename } = req.body || {};
+    if (!data || !filename) return res.status(400).json({ error: 'Missing data or filename' });
 
     const ext = path.extname(filename).toLowerCase();
     const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
-    if (!allowed.includes(ext)) {
-      return res.status(400).json({ error: 'Invalid file type' });
-    }
+    if (!allowed.includes(ext)) return res.status(400).json({ error: 'Invalid file type' });
 
-    if (!data.startsWith('data:image/')) {
-      return res.status(400).json({ error: 'Invalid image data' });
-    }
+    if (!data.startsWith('data:image/')) return res.status(400).json({ error: 'Invalid image data' });
 
-    // On Vercel (no persistent filesystem), return the data URL directly
+    // On Vercel (read-only FS), return the data URL directly so it can be embedded
     if (process.env.VERCEL === '1') {
       return res.json({ url: data });
     }
 
-    // Local dev: save to disk
+    // Local dev: save to /public/uploads/
     const matches = data.match(/^data:image\/\w+;base64,(.+)$/);
-    if (!matches) {
-      return res.status(400).json({ error: 'Invalid base64 image data' });
-    }
+    if (!matches) return res.status(400).json({ error: 'Invalid base64 data' });
 
-    if (!fs.existsSync(UPLOADS_DIR)) {
-      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-    }
+    if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
     const safeName = crypto.randomBytes(8).toString('hex') + ext;
     const filePath = path.join(UPLOADS_DIR, safeName);
     fs.writeFileSync(filePath, Buffer.from(matches[1], 'base64'));
 
     res.json({ url: `/uploads/${safeName}` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/upload/:filename — delete uploaded image (protected)
+router.delete('/api/upload/:filename', requireAuth, (req, res) => {
+  try {
+    const safeName = path.basename(req.params.filename);
+    const filePath = path.join(UPLOADS_DIR, safeName);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

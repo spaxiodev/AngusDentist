@@ -73,13 +73,13 @@
       text-decoration: none;
     }
     .nav-logo-icon {
-      width: 40px;
-      height: 40px;
+      width: 54px;
+      height: 54px;
       object-fit: contain;
     }
     .nav-logo-text {
       font-family: var(--font-display);
-      font-size: 1rem;
+      font-size: 1.15rem;
       font-weight: 500;
       color: var(--white);
       line-height: 1.2;
@@ -87,7 +87,7 @@
     }
     .nav-logo-text span {
       display: block;
-      font-size: 0.7rem;
+      font-size: 0.78rem;
       color: var(--gold);
       font-weight: 300;
       letter-spacing: 0.1em;
@@ -96,13 +96,13 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      gap: 1.4rem;
       list-style: none;
     }
     .nav-links a {
       color: rgba(255,255,255,0.75);
       text-decoration: none;
-      font-size: 0.8rem;
+      font-size: 0.73rem;
       font-weight: 400;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -1538,6 +1538,91 @@
       .dr-credentials { flex-direction: column; gap: 0.75rem; }
     }
 
+    /* ── Service card icon-centered redesign ── */
+    .service-card {
+      background: linear-gradient(145deg, #18364a 0%, #1e3f52 100%);
+      border: 1px solid rgba(163,116,91,0.1);
+    }
+    .service-card:not(:hover):not(.revealed) {
+      border-color: rgba(163,116,91,0.1);
+    }
+    .service-card:hover,
+    .service-card.revealed {
+      border-color: rgba(163,116,91,0.35);
+    }
+    /* Hide old background photo since we use icon cards */
+    .service-card > img { display: none; }
+
+    .svc-default {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 2rem 1.5rem;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 2;
+    }
+    .service-card:hover .svc-default,
+    .service-card.revealed .svc-default {
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+    }
+    .svc-icon {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.35));
+      transition: transform 0.3s ease;
+    }
+    .svc-icon-svg {
+      width: 200px;
+      height: 200px;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.35));
+      flex-shrink: 0;
+    }
+    .svc-default h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--white);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ── Testimonial navigation arrows ── */
+    .testimonials-nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .testi-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(163,116,91,0.45);
+      background: transparent;
+      color: var(--bronze);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .testi-btn:hover {
+      background: var(--bronze);
+      color: white;
+      border-color: var(--bronze);
+    }
+    .testi-btn svg { width: 18px; height: 18px; }
+
     /* Dental chair animation illustration */
     .dental-chair-svg {
       width: 100%;
@@ -1882,110 +1967,140 @@
 
     <div class="services-grid reveal">
 
+      <!-- 01 Cosmetic Dentistry -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1445527815219-ecbfec67492e?w=600&h=800&fit=crop&q=80" alt="Cosmetic dentistry" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">01</div><h3>Cosmetic Dentistry</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/pediatric_icon.png" alt="Cosmetic Dentistry icon" />
+          <h3 data-translate="svc-1-title">Cosmetic Dentistry</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Cosmetic Dentistry</h3>
+          <h3 data-translate="svc-1-title">Cosmetic Dentistry</h3>
           <p>Special care is put into creating natural and beautiful looking smiles. We combine artistry with the latest dental techniques.</p>
           <ul class="svc-overlay-bullets"><li>Veneers</li><li>Esthetic white restorations</li><li>E.Max, Empress, Captek crowns</li><li>Full mouth rehab</li><li>Smile makeover</li><li>Teeth whitening</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 02 Exams & Cleaning -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&h=800&fit=crop&q=80" alt="Dental exam" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">02</div><h3>Exams &amp; Cleaning</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/exam_cleaning_icon.png" alt="Exams and Cleaning icon" />
+          <h3 data-translate="svc-2-title">Exams &amp; Cleaning</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Exams and Cleaning</h3>
+          <h3 data-translate="svc-2-title">Exams &amp; Cleaning</h3>
           <p>We treat our patients with care, listen to their concerns, and provide thorough examinations using modern diagnostic tools.</p>
           <ul class="svc-overlay-bullets"><li>Thorough clinical exam</li><li>Digital radiographs</li><li>DSLR and digital photography</li><li>Tar and stain removal</li><li>Fix bad breath</li><li>Consultations</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 03 Emergency -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1489710437720-ebb67ec84dd2?w=600&h=800&fit=crop&q=80" alt="Emergency dental care" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">03</div><h3>Emergency</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/emergency.png" alt="Emergency Treatment icon" />
+          <h3 data-translate="svc-3-title">Emergency</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Emergency Treatment</h3>
+          <h3 data-translate="svc-3-title">Emergency Treatment</h3>
           <p>We are available by phone and prioritize next-day emergency appointments. Dental pain shouldn't wait.</p>
           <ul class="svc-overlay-bullets"><li>Next day emergency exams</li><li>Emergency extractions</li><li>Emergency root canals</li><li>Fixing chipped front tooth</li><li>Dental trauma</li><li>Pain management</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 04 Fillings & Crowns -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&h=800&fit=crop&q=80" alt="Dental fillings" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">04</div><h3>Fillings &amp; Crowns</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/Fillings_RestorationIcon.png" alt="Fillings and Crowns icon" />
+          <h3 data-translate="svc-4-title">Fillings &amp; Crowns</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Fillings and Crowns</h3>
+          <h3 data-translate="svc-4-title">Fillings &amp; Crowns</h3>
           <p>When a cavity forms from decay, it needs to be restored. We offer a full range of filling and crown options.</p>
           <ul class="svc-overlay-bullets"><li>Durable white fillings</li><li>Natural composite fillings</li><li>Gold and ceramic onlays</li><li>Porcelain fused to metal crowns</li><li>Ceramic and Zirconia crowns</li><li>Metal alloy fillings</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 05 Root Canals -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1606265752439-1f18756aa5fc?w=600&h=800&fit=crop&q=80" alt="Root canal" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">05</div><h3>Root Canals</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/rootCanal_icon.png" alt="Root Canal icon" />
+          <h3 data-translate="svc-5-title">Root Canals</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Root Canal Treatment</h3>
+          <h3 data-translate="svc-5-title">Root Canal Treatment</h3>
           <p>When a tooth's pulp becomes infected or inflamed, root canal therapy can save the tooth and relieve pain.</p>
           <ul class="svc-overlay-bullets"><li>Diagnosis of cause of pain</li><li>Emergency pain treatment</li><li>Intervisit medication</li><li>Standard root canal therapy</li><li>Save your natural tooth</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 06 Implants & Crowns -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=600&h=800&fit=crop&q=80" alt="Dental implants" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">06</div><h3>Implants &amp; Crowns</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/surgery_Icon.png" alt="Implants and Crowns icon" />
+          <h3 data-translate="svc-6-title">Implants &amp; Crowns</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Implants and Crowns</h3>
+          <h3 data-translate="svc-6-title">Implants &amp; Crowns</h3>
           <p>Dental implants are the best permanent solution to replace a missing tooth. They look, feel, and function like natural teeth.</p>
           <ul class="svc-overlay-bullets"><li>Single unit implant and crown</li><li>Multi-unit implants</li><li>Implant supported dentures</li><li>Full mouth crowns</li><li>All-on-4</li><li>Hybrid dentures</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 07 TMD / Jaw Pain -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=800&fit=crop&q=80" alt="TMD treatment" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">07</div><h3>TMD / Jaw Pain</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/TMJ_2_icon.png" alt="TMD Jaw Pain icon" />
+          <h3 data-translate="svc-7-title">TMD / Jaw Pain</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>TMD / Jaw Joint Pain</h3>
+          <h3 data-translate="svc-7-title">TMD / Jaw Joint Pain</h3>
           <p>Does your jaw lock? Do you hear clicking or popping sounds? Do you wake up with jaw pain or headaches?</p>
           <ul class="svc-overlay-bullets"><li>TMJ disorder diagnosis</li><li>Differentiation of pain</li><li>Treatment of TMD pain</li><li>Occlusal appliances</li><li>Mouth guard</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 08 Dentures & Prosthesis -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=600&h=800&fit=crop&q=80" alt="Dentures" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">08</div><h3>Dentures &amp; Prosthesis</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/dentures_icon.png" alt="Dentures and Prosthesis icon" />
+          <h3 data-translate="svc-8-title">Dentures &amp; Prosthesis</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Dentures and Prosthesis</h3>
+          <h3 data-translate="svc-8-title">Dentures &amp; Prosthesis</h3>
           <p>We create custom, natural-looking dentures that restore both the appearance and function of your smile.</p>
           <ul class="svc-overlay-bullets"><li>Natural looking dentures</li><li>Customised dentures</li><li>Partial dentures</li><li>Implant supported dentures</li><li>Implant retained dentures</li><li>All on 4</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 09 Surgery & Grafts -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=600&h=800&fit=crop&q=80" alt="Oral surgery" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">09</div><h3>Surgery &amp; Grafts</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/surgery_Icon.png" alt="Surgery and Grafts icon" />
+          <h3 data-translate="svc-9-title">Surgery &amp; Grafts</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Surgeries and Grafts</h3>
+          <h3 data-translate="svc-9-title">Surgery &amp; Grafts</h3>
           <p>We offer comprehensive surgical procedures and stay current with the latest research and techniques.</p>
           <ul class="svc-overlay-bullets"><li>Wisdom tooth removal</li><li>Gum and bone disease</li><li>Periodontal surgeries</li><li>Gum and bone grafts</li><li>Implant surgery</li><li>Laser technology</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div></div>
       </div>
 
+      <!-- 10 Pediatric Dentistry -->
       <div class="service-card">
-        <img src="https://images.unsplash.com/photo-1514849302-984523450cf4?w=600&h=800&fit=crop&q=80" alt="Pediatric dentistry" loading="lazy" />
-        <div class="svc-label"><div class="svc-label-num">10</div><h3>Pediatric Dentistry</h3></div>
+        <div class="svc-default">
+          <img class="svc-icon" src="/service-icons/pediatric_icon.png" alt="Pediatric Dentistry icon" />
+          <h3 data-translate="svc-10-title">Pediatric Dentistry</h3>
+        </div>
         <div class="svc-overlay"><div class="svc-overlay-inner">
-          <h3>Pediatric Dentistry</h3>
+          <h3 data-translate="svc-10-title">Pediatric Dentistry</h3>
           <p>We love kids! We focus on making every dental visit comfortable and fun for children of all ages.</p>
           <ul class="svc-overlay-bullets"><li>First dental visit</li><li>Baby teeth fillings</li><li>Local anesthesia</li><li>Stainless steel crowns</li><li>Space maintainers</li><li>Frenectomy</li></ul>
           <a href="#contact" class="svc-cta">Book Appointment <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
@@ -2355,6 +2470,19 @@
         </div>
       </div>
     </div>
+    <!-- Scroll arrows -->
+    <div class="testimonials-nav">
+      <button class="testi-btn testi-prev" aria-label="Previous review">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <button class="testi-btn testi-next" aria-label="Next review">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
   </section>
 
   <!-- Contact Section -->
@@ -2376,7 +2504,7 @@
           </div>
           <div class="contact-item-text">
             <strong data-translate="contact-address">Address</strong>
-            <span>2933 Sherbrooke est<br/>Montreal, Quebec H1W1B2</span>
+            <span id="contact-address-text">2933 Sherbrooke est<br/>Montreal, Quebec H1W1B2</span>
           </div>
         </div>
         <div class="contact-item">
@@ -2387,7 +2515,7 @@
           </div>
           <div class="contact-item-text">
             <strong data-translate="contact-phone">Phone</strong>
-            <a href="tel:5144371299">(514)-437-1299</a>
+            <a href="tel:5144371299" id="contact-phone-link">(514)-437-1299</a>
           </div>
         </div>
         <div class="contact-item">
@@ -2502,22 +2630,23 @@
       <div class="footer-col">
         <h4 data-translate="footer-contact">Contact</h4>
         <ul>
-          <li><a href="tel:5144371299">(514)-437-1299</a></li>
-          <li><a href="mailto:clinique.angus@outlook.com">clinique.angus@outlook.com</a></li>
-          <li><a href="#">2933 Sherbrooke est, Montreal</a></li>
-          <li><a href="#">Quebec, H1W1B2</a></li>
+          <li><a href="tel:5144371299" data-editable="footer-phone">(514)-437-1299</a></li>
+          <li><a href="mailto:clinique.angus@outlook.com" data-editable="footer-email">clinique.angus@outlook.com</a></li>
+          <li><a href="#" data-editable="footer-address">2933 Sherbrooke est, Montreal</a></li>
+          <li><a href="#" data-editable="footer-city">Quebec, H1W1B2</a></li>
           <li><a href="#hours" data-translate="footer-hours">View Hours</a></li>
           <li><a href="#contact" data-translate="footer-book">Book Appointment</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p data-translate="footer-copy">© 2026 Clinique Dentaire d'Urgence et Familiale Angus-Maisonneuve. All rights reserved.</p>
-      <a href="tel:5144371299" class="footer-phone">(514)-437-1299</a>
+      <p data-editable="footer-copy">© 2026 Clinique Dentaire d'Urgence et Familiale Angus-Maisonneuve. All rights reserved.</p>
+      <a href="tel:5144371299" class="footer-phone" data-editable="footer-phone">(514)-437-1299</a>
     </div>
   </footer>
 
   <script src="/translations.js"></script>
+  <script src="/content-loader.js" defer></script>
   <script>
     // Nav scroll
     const nav = document.getElementById('nav');
@@ -2758,6 +2887,27 @@
         if (btn) btn.setAttribute('aria-expanded', 'false');
       });
     });
+
+    // Testimonials carousel arrows
+    (function() {
+      const track = document.querySelector('.testimonials-track');
+      const prevBtn = document.querySelector('.testi-prev');
+      const nextBtn = document.querySelector('.testi-next');
+      if (!track || !prevBtn || !nextBtn) return;
+      const cardWidth = () => {
+        const card = track.querySelector('.testimonial-card');
+        if (!card) return 340;
+        const style = window.getComputedStyle(track);
+        const gap = parseFloat(style.gap) || 24;
+        return card.offsetWidth + gap;
+      };
+      prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -cardWidth(), behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: cardWidth(), behavior: 'smooth' });
+      });
+    })();
 
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(a => {

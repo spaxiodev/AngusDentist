@@ -57,6 +57,42 @@ const TRANSLATIONS = {
   'svc-tab-surgery':    { fr: 'Chirurgie', es: 'Cirugía' },
   'svc-tab-pediatric':  { fr: 'Pédiatrie', es: 'Pediatría' },
 
+  // ---- Service Card Titles ----
+  'svc-1-title':  { fr: 'Dentisterie Esthétique', es: 'Odontología Estética' },
+  'svc-2-title':  { fr: 'Examens et Nettoyage', es: 'Exámenes y Limpieza' },
+  'svc-3-title':  { fr: 'Urgences', es: 'Urgencias' },
+  'svc-4-title':  { fr: 'Obturations et Couronnes', es: 'Obturaciones y Coronas' },
+  'svc-5-title':  { fr: 'Traitements de Canal', es: 'Endodoncia' },
+  'svc-6-title':  { fr: 'Implants et Couronnes', es: 'Implantes y Coronas' },
+  'svc-7-title':  { fr: 'ATM / Douleur Mâchoire', es: 'ATM / Dolor Mandíbula' },
+  'svc-8-title':  { fr: 'Prothèses Dentaires', es: 'Dentaduras y Prótesis' },
+  'svc-9-title':  { fr: 'Chirurgie et Greffes', es: 'Cirugía e Injertos' },
+  'svc-10-title': { fr: 'Dentisterie Pédiatrique', es: 'Odontología Pediátrica' },
+
+  // ---- Service Card Descriptions ----
+  'svc-1-desc': { fr: 'Un soin particulier est apporté à la création de sourires naturels et beaux. Nous combinons l\'art et les dernières techniques dentaires.', es: 'Se pone especial cuidado en crear sonrisas naturales y hermosas. Combinamos el arte con las últimas técnicas dentales.' },
+  'svc-2-desc': { fr: 'Nous traitons nos patients avec soin, écoutons leurs préoccupations et effectuons des examens approfondis avec des outils diagnostiques modernes.', es: 'Tratamos a nuestros pacientes con cuidado, escuchamos sus inquietudes y realizamos exámenes exhaustivos con herramientas diagnósticas modernas.' },
+  'svc-3-desc': { fr: 'Nous sommes disponibles par téléphone et priorisons les rendez-vous d\'urgence le lendemain. La douleur dentaire ne doit pas attendre.', es: 'Estamos disponibles por teléfono y priorizamos citas de emergencia al día siguiente. El dolor dental no debe esperar.' },
+  'svc-4-desc': { fr: 'Lorsqu\'une carie se forme, elle doit être restaurée. Nous offrons une gamme complète d\'options d\'obturations et de couronnes.', es: 'Cuando se forma una caries, necesita ser restaurada. Ofrecemos una gama completa de opciones de obturaciones y coronas.' },
+  'svc-5-desc': { fr: 'Lorsque la pulpe d\'une dent est infectée ou enflammée, le traitement de canal peut sauver la dent et soulager la douleur.', es: 'Cuando la pulpa de un diente se infecta o inflama, el tratamiento de conducto puede salvar el diente y aliviar el dolor.' },
+  'svc-6-desc': { fr: 'Les implants dentaires sont la meilleure solution permanente pour remplacer une dent manquante. Ils ressemblent et fonctionnent comme des dents naturelles.', es: 'Los implantes dentales son la mejor solución permanente para reemplazar un diente perdido. Se ven y funcionan como dientes naturales.' },
+  'svc-7-desc': { fr: 'Votre mâchoire se bloque-t-elle? Entendez-vous des claquements? Vous réveillez-vous avec des douleurs à la mâchoire ou des maux de tête?', es: '¿Se le bloquea la mandíbula? ¿Escucha chasquidos? ¿Se despierta con dolor de mandíbula o dolores de cabeza?' },
+  'svc-8-desc': { fr: 'Nous créons des prothèses sur mesure d\'apparence naturelle qui restaurent l\'apparence et la fonction de votre sourire.', es: 'Creamos dentaduras a medida de apariencia natural que restauran tanto la apariencia como la función de su sonrisa.' },
+  'svc-9-desc': { fr: 'Nous offrons des procédures chirurgicales complètes et restons à jour avec les dernières recherches et techniques.', es: 'Ofrecemos procedimientos quirúrgicos integrales y nos mantenemos actualizados con las últimas investigaciones y técnicas.' },
+  'svc-10-desc': { fr: 'Nous adorons les enfants! Nous faisons en sorte que chaque visite dentaire soit confortable et amusante pour les enfants de tous âges.', es: '¡Amamos a los niños! Nos enfocamos en hacer que cada visita dental sea cómoda y divertida para niños de todas las edades.' },
+
+  // ---- Service Card Bullets ----
+  'svc-1-bullets': { fr: '<li>Facettes</li><li>Restaurations esthétiques blanches</li><li>Couronnes E.Max, Empress, Captek</li><li>Réhabilitation complète</li><li>Transformation du sourire</li><li>Blanchiment des dents</li>', es: '<li>Carillas</li><li>Restauraciones estéticas blancas</li><li>Coronas E.Max, Empress, Captek</li><li>Rehabilitación completa</li><li>Transformación de sonrisa</li><li>Blanqueamiento dental</li>' },
+  'svc-2-bullets': { fr: '<li>Examen clinique complet</li><li>Radiographies numériques</li><li>Photographie numérique</li><li>Détartrage et élimination des taches</li><li>Traitement de la mauvaise haleine</li><li>Consultations</li>', es: '<li>Examen clínico exhaustivo</li><li>Radiografías digitales</li><li>Fotografía digital</li><li>Eliminación de sarro y manchas</li><li>Tratamiento del mal aliento</li><li>Consultas</li>' },
+  'svc-3-bullets': { fr: '<li>Examens d\'urgence le lendemain</li><li>Extractions d\'urgence</li><li>Traitements de canal d\'urgence</li><li>Réparation de dent ébréchée</li><li>Traumatisme dentaire</li><li>Gestion de la douleur</li>', es: '<li>Exámenes de emergencia al día siguiente</li><li>Extracciones de emergencia</li><li>Endodoncias de emergencia</li><li>Reparación de diente astillado</li><li>Trauma dental</li><li>Manejo del dolor</li>' },
+  'svc-4-bullets': { fr: '<li>Obturations blanches durables</li><li>Obturations composites naturelles</li><li>Inlays en or et céramique</li><li>Couronnes céramo-métalliques</li><li>Couronnes en céramique et zircone</li><li>Obturations en alliage métallique</li>', es: '<li>Obturaciones blancas duraderas</li><li>Obturaciones de composite natural</li><li>Incrustaciones de oro y cerámica</li><li>Coronas de porcelana fusionada a metal</li><li>Coronas de cerámica y zirconio</li><li>Obturaciones de aleación metálica</li>' },
+  'svc-5-bullets': { fr: '<li>Diagnostic de la cause de la douleur</li><li>Traitement d\'urgence de la douleur</li><li>Médication entre les visites</li><li>Traitement de canal standard</li><li>Préserver votre dent naturelle</li>', es: '<li>Diagnóstico de la causa del dolor</li><li>Tratamiento de emergencia del dolor</li><li>Medicación entre visitas</li><li>Tratamiento de conducto estándar</li><li>Conservar su diente natural</li>' },
+  'svc-6-bullets': { fr: '<li>Implant unitaire et couronne</li><li>Implants multiples</li><li>Prothèses sur implants</li><li>Couronnes complètes</li><li>All-on-4</li><li>Prothèses hybrides</li>', es: '<li>Implante unitario y corona</li><li>Implantes múltiples</li><li>Prótesis sobre implantes</li><li>Coronas completas</li><li>All-on-4</li><li>Prótesis híbridas</li>' },
+  'svc-7-bullets': { fr: '<li>Diagnostic des troubles ATM</li><li>Différenciation de la douleur</li><li>Traitement de la douleur ATM</li><li>Gouttières occlusales</li><li>Protège-dents</li>', es: '<li>Diagnóstico del trastorno ATM</li><li>Diferenciación del dolor</li><li>Tratamiento del dolor ATM</li><li>Férulas oclusales</li><li>Protector bucal</li>' },
+  'svc-8-bullets': { fr: '<li>Prothèses d\'apparence naturelle</li><li>Prothèses personnalisées</li><li>Prothèses partielles</li><li>Prothèses sur implants</li><li>Prothèses retenues sur implants</li><li>All on 4</li>', es: '<li>Dentaduras de apariencia natural</li><li>Dentaduras personalizadas</li><li>Dentaduras parciales</li><li>Prótesis sobre implantes</li><li>Prótesis retenidas por implantes</li><li>All on 4</li>' },
+  'svc-9-bullets': { fr: '<li>Extraction des dents de sagesse</li><li>Maladies des gencives et des os</li><li>Chirurgies parodontales</li><li>Greffes gingivales et osseuses</li><li>Chirurgie implantaire</li><li>Technologie laser</li>', es: '<li>Extracción de muelas del juicio</li><li>Enfermedad de encías y huesos</li><li>Cirugías periodontales</li><li>Injertos gingivales y óseos</li><li>Cirugía de implantes</li><li>Tecnología láser</li>' },
+  'svc-10-bullets': { fr: '<li>Première visite dentaire</li><li>Obturations des dents de lait</li><li>Anesthésie locale</li><li>Couronnes en acier inoxydable</li><li>Mainteneurs d\'espace</li><li>Frénectomie</li>', es: '<li>Primera visita dental</li><li>Obturaciones de dientes de leche</li><li>Anestesia local</li><li>Coronas de acero inoxidable</li><li>Mantenedores de espacio</li><li>Frenectomía</li>' },
+
   // ---- Promise ----
   'promise-label': { fr: 'Notre promesse', es: 'Nuestra promesa' },
   'promise-title': { fr: 'Clinique conviviale <em>près de chez vous</em>', es: 'Clínica amigable <em>cerca de usted</em>' },

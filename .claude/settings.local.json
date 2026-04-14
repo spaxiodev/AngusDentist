@@ -1,15 +1,26 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node:*)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
-      "Bash(netstat -aon)",
-      "Bash(taskkill:*)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200/)",
-      "Bash(npm start:*)",
-      "Bash(rm package-lock.json)",
+      "Bash(git init:*)",
+      "Bash(git remote:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git reset:*)",
+      "Bash(git stash:*)",
+      "Bash(mv /Users/stefano/AngusDentist/.claude/settings.local.json /tmp/settings.local.json.bak)",
+      "Bash(mkdir -p /Users/stefano/AngusDentist/.claude)",
+      "Bash(mv /tmp/settings.local.json.bak /Users/stefano/AngusDentist/.claude/settings.local.json)",
       "Bash(npm install:*)",
-      "Bash(curl -s http://localhost:3000)"
+      "Bash(node server.js)",
+      "Bash(curl -s http://localhost:3000/translations.js)",
+      "Bash(node -e \"require\\('./public/translations.js'\\); console.log\\('OK'\\)\")",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(node -e ':*)",
+      "Bash(pkill -f \"node server.js\")",
+      "Bash(grep -r \"require.*database\\\\|require.*db\\\\|require.*sqlite\\\\|require.*mongo\" /Users/stefano/AngusDentist --include=\"*.js\" ! -path \"*/node_modules/*\")",
+      "Bash(pkill -f \"nodemon server.js\")",
+      "Bash(xargs kill:*)"
     ]
   }
 }

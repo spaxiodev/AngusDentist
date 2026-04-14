@@ -2,9 +2,11 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const rateLimit = require('express-rate-limit');
 
 const contactRoutes = require('../routes/contact');
+const adminRoutes = require('../routes/admin');
 
 const app = express();
 
@@ -22,11 +24,39 @@ const contactLimiter = rateLimit({
   message: { error: 'Too many submissions. Please try again later.' }
 });
 
-// Routes
+// ── Public content API ────────────────────────────────────────
+// GET /api/content — returns website content for front-end to apply
+const CONTENT_FILE = path.join(__dirname, '../db/content.json');
+
+app.get('/api/content', (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
+    res.json(data);
+  } catch {
+    res.json({ text: {}, images: {}, doctors: [], services: [], testimonials: [] });
+  }
+});
+
+// ── Routes ────────────────────────────────────────────────────
 app.use('/api/contact', contactLimiter, contactRoutes);
 
-// Serve main site
-app.get('/', (req, res) => {
+// Admin panel — pages at /admin and /admin/login
+// Admin API at /api/admin/*  (but mounted as /admin/api/* in the router)
+app.use('/admin', adminRoutes);
+
+// Rewrite /api/admin/* → admin router handles it as /api/*
+// The admin router defines routes like router.get('/api/content', ...)
+// which Express mounts as /admin/api/content — matches /api/admin/...? No.
+// Actually we need /api/admin/* to also hit the admin router.
+// Let's add a second mount:
+app.use('/api/admin', (req, res, next) => {
+  // Rewrite path so the admin router sees /api/...
+  req.url = '/api' + req.url;
+  adminRoutes(req, res, next);
+});
+
+// Serve main site for all unmatched routes
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
