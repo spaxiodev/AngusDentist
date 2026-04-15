@@ -103,6 +103,7 @@
     if (!grid) return;
 
     grid.innerHTML = services.map((svc) => {
+      const id = svc.id || '';
       const iconHTML = svc.icon
         ? `<img class="svc-icon" src="${svc.icon}" alt="${svc.title}" />`
         : `<svg class="svc-icon-svg" viewBox="0 0 80 80" fill="none">
@@ -114,13 +115,13 @@
         <div class="service-card reveal">
           <div class="svc-default">
             ${iconHTML}
-            <h3>${svc.title}</h3>
+            <h3 data-translate="${id}-title">${svc.title}</h3>
           </div>
           <div class="svc-overlay">
             <div class="svc-overlay-inner">
-              <h3>${svc.title}</h3>
-              <p>${svc.description || ''}</p>
-              <ul class="svc-overlay-bullets">${bulletsHTML}</ul>
+              <h3 data-translate="${id}-title">${svc.title}</h3>
+              <p data-translate="${id}-desc">${svc.description || ''}</p>
+              <ul class="svc-overlay-bullets" data-translate="${id}-bullets">${bulletsHTML}</ul>
               <a href="#contact" class="svc-cta">Book Appointment
                 <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -145,6 +146,11 @@
     });
 
     observeReveals(grid);
+
+    // Re-apply current language to newly built service elements
+    if (typeof window.__reapplyLanguage === 'function') {
+      window.__reapplyLanguage();
+    }
   }
 
   // ── Rebuild testimonials ─────────────────────────────────────

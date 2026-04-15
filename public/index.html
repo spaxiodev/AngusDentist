@@ -2788,6 +2788,15 @@
     // Language switcher
     let currentLang = 'en';
     const englishOriginals = {};
+    window.__currentLang = function () { return currentLang; };
+    window.__reapplyLanguage = function () {
+      // Cache English originals for any new [data-translate] elements
+      document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (!(key in englishOriginals)) englishOriginals[key] = el.innerHTML;
+      });
+      if (currentLang !== 'en') switchLanguage(currentLang);
+    };
 
     // Store English originals on load
     document.querySelectorAll('[data-translate]').forEach(el => {

@@ -20,7 +20,8 @@
       "Bash(pkill -f \"node server.js\")",
       "Bash(grep -r \"require.*database\\\\|require.*db\\\\|require.*sqlite\\\\|require.*mongo\" /Users/stefano/AngusDentist --include=\"*.js\" ! -path \"*/node_modules/*\")",
       "Bash(pkill -f \"nodemon server.js\")",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(48\\).toString\\('hex'\\)\\)\")"
     ]
   }
 }
