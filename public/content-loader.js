@@ -80,6 +80,7 @@
             <path d="M38 75 C38 72 42 70 45 72 C48 74 46 78 44 80" stroke="#a3745b" stroke-width="2" fill="none" stroke-linecap="round"/>
             <circle cx="57" cy="78" r="3" fill="#a3745b" opacity="0.7"/>
           </svg>`;
+      const id = doc.id || '';
       return `
         <div class="doctor-card reveal ${delay}">
           <div class="doctor-avatar" style="background:${gradient};position:relative;">
@@ -87,13 +88,18 @@
             <div class="doctor-avatar-ring"></div>
           </div>
           <div class="doctor-info">
-            <h3>${doc.name}</h3>
-            <div class="doctor-title">${doc.title}</div>
+            <h3 data-editable="${id}-name">${doc.name}</h3>
+            <div class="doctor-title" data-editable="${id}-title">${doc.title}</div>
           </div>
         </div>`;
     }).join('');
 
     observeReveals(grid);
+
+    // Re-apply current language to newly built doctor elements
+    if (typeof window.__reapplyLanguage === 'function') {
+      window.__reapplyLanguage();
+    }
   }
 
   // ── Rebuild services grid ────────────────────────────────────
@@ -159,20 +165,28 @@
     const track = document.querySelector('.testimonials-track');
     if (!track) return;
 
-    track.innerHTML = testimonials.map((t) => `
+    track.innerHTML = testimonials.map((t, i) => {
+      const idx = i + 1;
+      return `
       <div class="testimonial-card">
         <div class="testimonial-stars">
           <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
         </div>
-        <p class="testimonial-text">${t.text}</p>
+        <p class="testimonial-text" data-editable="review-${idx}-text">${t.text}</p>
         <div class="testimonial-author">
-          <div class="author-avatar">${t.avatar || (t.author || '').substring(0, 2).toUpperCase()}</div>
+          <div class="author-avatar" data-editable="review-${idx}-avatar">${t.avatar || (t.author || '').substring(0, 2).toUpperCase()}</div>
           <div>
-            <div class="author-name">${t.author}</div>
-            <div class="author-tag">${t.tag}</div>
+            <div class="author-name" data-editable="review-${idx}-name">${t.author}</div>
+            <div class="author-tag" data-editable="review-${idx}-tag">${t.tag}</div>
           </div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
+
+    // Re-apply current language to newly built testimonial elements
+    if (typeof window.__reapplyLanguage === 'function') {
+      window.__reapplyLanguage();
+    }
   }
 
   // ── Apply contact / footer info ──────────────────────────────

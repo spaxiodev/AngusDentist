@@ -128,6 +128,11 @@ const TRANSLATIONS = {
   'feature-bio-1': { fr: 'Dr. Jitesh Patel travaille comme dentiste généraliste depuis l\'obtention de son diplôme de l\'Université McGill en 2015. En plus de posséder sa propre clinique dentaire, il pratique la dentisterie gériatrique mobile dans divers centres de soins de longue durée à Montréal.', es: 'El Dr. Jitesh Patel trabaja como dentista general desde que se graduó de la Universidad McGill en 2015. Además de tener su propia clínica dental, practica odontología geriátrica móvil en varios hogares de ancianos en Montreal.' },
   'feature-bio-2': { fr: 'Il travaille également comme instructeur clinique à la Faculté de médecine dentaire de McGill à la Clinique de diagnostic oral et au Programme de sensibilisation communautaire, où il supervise les étudiants en médecine dentaire.', es: 'También trabaja como instructor clínico en la Facultad de Odontología de McGill en la Clínica de Diagnóstico Oral y el Programa de Extensión Comunitaria, donde supervisa a estudiantes de odontología.' },
   'feature-bio-3': { fr: 'Avant de pratiquer la dentisterie, Dr. Patel a travaillé comme ingénieur pendant 17 ans chez Ericsson Canada Inc. Après avoir complété une maîtrise en enseignement des mathématiques à l\'Université Concordia en 2008, il a trouvé sa véritable vocation — faire une véritable différence dans la vie des gens grâce aux soins de santé bucco-dentaire.', es: 'Antes de ejercer la odontología, el Dr. Patel trabajó como ingeniero durante 17 años en Ericsson Canada Inc. Después de completar una Maestría en Enseñanza de Matemáticas en la Universidad Concordia en 2008, encontró su verdadera vocación — hacer una diferencia genuina en la vida de las personas a través del cuidado de la salud bucal.' },
+  'feature-subtitle': { fr: 'DENTISTE GÉNÉRALISTE', es: 'DENTISTA GENERAL' },
+  'feature-cred-1': { fr: 'Université McGill D.M.D', es: 'Universidad McGill D.M.D' },
+  'feature-cred-2': { fr: 'Concordia M.T.M 2008', es: 'Concordia M.T.M 2008' },
+  'feature-cred-3': { fr: '17 ans d\'ingénierie', es: '17 años de ingeniería' },
+  'feature-cred-4': { fr: 'Instructeur clinique McGill', es: 'Instructor clínico McGill' },
 
   // ---- Testimonials ----
   'testimonials-label': { fr: 'Histoires heureuses', es: 'Historias felices' },

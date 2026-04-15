@@ -2366,7 +2366,7 @@
           <!-- Name plate -->
           <rect x="20" y="340" width="240" height="40" rx="0" fill="rgba(10,22,40,0.7)"/>
           <text x="140" y="358" text-anchor="middle" fill="white" font-size="13" font-family="Cormorant Garamond, serif" font-weight="500">Dr. Jitesh Patel, D.M.D</text>
-          <text x="140" y="372" text-anchor="middle" fill="rgba(163,116,91,0.8)" font-size="9" font-family="DM Sans, sans-serif" letter-spacing="2">GENERAL DENTIST</text>
+          <text x="140" y="372" text-anchor="middle" fill="rgba(163,116,91,0.8)" font-size="9" font-family="DM Sans, sans-serif" letter-spacing="2" data-translate="feature-subtitle">GENERAL DENTIST</text>
         </svg>
       </div>
       <div class="dr-content reveal reveal-delay-1">
@@ -2378,19 +2378,19 @@
         <div class="dr-credentials">
           <div class="credential-tag">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
-            McGill University D.M.D
+            <span data-translate="feature-cred-1">McGill University D.M.D</span>
           </div>
           <div class="credential-tag">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
-            Concordia M.T.M 2008
+            <span data-translate="feature-cred-2">Concordia M.T.M 2008</span>
           </div>
           <div class="credential-tag">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
-            17 Years Engineering
+            <span data-translate="feature-cred-3">17 Years Engineering</span>
           </div>
           <div class="credential-tag">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
-            McGill Clinical Instructor
+            <span data-translate="feature-cred-4">McGill Clinical Instructor</span>
           </div>
         </div>
       </div>
@@ -2794,6 +2794,13 @@
       document.querySelectorAll('[data-translate]').forEach(el => {
         const key = el.getAttribute('data-translate');
         if (!(key in englishOriginals)) englishOriginals[key] = el.innerHTML;
+      });
+      // Cache English originals for any new [data-editable] elements with translations
+      document.querySelectorAll('[data-editable]').forEach(el => {
+        const key = el.getAttribute('data-editable');
+        if (TRANSLATIONS[key] && !('e:' + key in englishOriginals)) {
+          englishOriginals['e:' + key] = el.innerHTML;
+        }
       });
       if (currentLang !== 'en') switchLanguage(currentLang);
     };
