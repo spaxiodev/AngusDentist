@@ -112,7 +112,7 @@ router.put('/api/content', requireAuth, express.json({ limit: '20mb' }), async (
 // ── Image Upload API ─────────────────────────────────────────
 
 // POST /api/admin/upload — upload image as base64 (protected)
-router.post('/api/upload', requireAuth, express.json({ limit: '20mb' }), (req, res) => {
+router.post('/api/upload', requireAuth, express.json({ limit: '20mb' }), async (req, res) => {
   try {
     const { data, filename } = req.body || {};
     if (!data || !filename) return res.status(400).json({ error: 'Missing data or filename' });
@@ -123,20 +123,41 @@ router.post('/api/upload', requireAuth, express.json({ limit: '20mb' }), (req, r
 
     if (!data.startsWith('data:image/')) return res.status(400).json({ error: 'Invalid image data' });
 
-    // On Vercel (read-only FS), return the data URL directly so it can be embedded
+    const matches = data.match(/^data:image\/(\w+);base64,(.+)$/);
+    if (!matches) return res.status(400).json({ error: 'Invalid base64 data' });
+
+    const mimeSubtype = matches[1];
+    const base64Data = matches[2];
+    const safeName = crypto.randomBytes(8).toString('hex') + ext;
+
+    // On Vercel (read-only FS), upload to Supabase Storage
     if (process.env.VERCEL === '1') {
-      return res.json({ url: data });
+      const buffer = Buffer.from(base64Data, 'base64');
+      const uploadRes = await fetch(
+        `${SUPABASE_URL}/storage/v1/object/uploads/${safeName}`,
+        {
+          method: 'POST',
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': `image/${mimeSubtype}`,
+          },
+          body: buffer,
+        }
+      );
+      if (!uploadRes.ok) {
+        const err = await uploadRes.text();
+        throw new Error('Supabase Storage upload failed: ' + err);
+      }
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/uploads/${safeName}`;
+      return res.json({ url: publicUrl });
     }
 
     // Local dev: save to /public/uploads/
-    const matches = data.match(/^data:image\/\w+;base64,(.+)$/);
-    if (!matches) return res.status(400).json({ error: 'Invalid base64 data' });
-
     if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
-    const safeName = crypto.randomBytes(8).toString('hex') + ext;
     const filePath = path.join(UPLOADS_DIR, safeName);
-    fs.writeFileSync(filePath, Buffer.from(matches[1], 'base64'));
+    fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
 
     res.json({ url: `/uploads/${safeName}` });
   } catch (err) {
