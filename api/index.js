@@ -8,7 +8,7 @@ const adminRoutes = require('../routes/admin');
 const app = express();
 
 // Middleware
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files (public/)

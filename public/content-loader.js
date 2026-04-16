@@ -83,6 +83,19 @@
         }
       }
     }
+    // Promise section image (replaces teeth SVG)
+    if (imagesObj['promise-image']) {
+      var promiseWrap = document.querySelector('.teeth-row');
+      if (promiseWrap) {
+        var promiseImg = document.createElement('img');
+        promiseImg.src = imagesObj['promise-image'];
+        promiseImg.alt = 'Our clinic';
+        promiseImg.style.cssText = 'max-width:320px;max-height:280px;width:100%;height:auto;object-fit:contain;border-radius:12px;';
+        var promiseSvg = promiseWrap.querySelector('svg');
+        if (promiseSvg) promiseSvg.style.display = 'none';
+        promiseWrap.appendChild(promiseImg);
+      }
+    }
     // Featured doctor photo
     if (imagesObj['feature-photo']) {
       var drWrap = document.querySelector('.dr-avatar-large');
@@ -233,6 +246,24 @@
     }
   }
 
+  // ── Rebuild footer services from dynamic list ────────────────
+  function rebuildFooterServices(services) {
+    if (!services || !services.length) return;
+    // Find the footer services list (ul under the "Services" heading)
+    var footerCols = document.querySelectorAll('.footer-col');
+    footerCols.forEach(function(col) {
+      var heading = col.querySelector('h4');
+      if (heading && (heading.textContent.trim() === 'Services' || heading.getAttribute('data-editable') === 'footer-services-heading' || heading.getAttribute('data-translate') === 'footer-services-heading')) {
+        var ul = col.querySelector('ul');
+        if (ul) {
+          ul.innerHTML = services.map(function(svc) {
+            return '<li><a href="#services">' + svc.title + '</a></li>';
+          }).join('');
+        }
+      }
+    });
+  }
+
   // ── Apply contact / footer info ──────────────────────────────
   function applyContactInfo(text) {
     if (!text) return;
@@ -312,6 +343,7 @@
       }
       if (content.services && content.services.length) {
         rebuildServices(content.services);
+        rebuildFooterServices(content.services);
       }
       if (content.testimonials && content.testimonials.length) {
         rebuildTestimonials(content.testimonials);

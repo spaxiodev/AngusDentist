@@ -1007,7 +1007,8 @@
       border-radius: 12px;
     }
     .about-image-wrap:hover .admin-img-upload-overlay,
-    .dr-avatar-large:hover .admin-img-upload-overlay { opacity: 1; }
+    .dr-avatar-large:hover .admin-img-upload-overlay,
+    #promiseImageWrap:hover .admin-img-upload-overlay { opacity: 1; }
     .admin-img-upload-overlay span {
       background: var(--bronze);
       color: white;
@@ -1379,7 +1380,8 @@
     <p data-editable="promise-text" contenteditable="true">At Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve, we've taken proactive steps to ensure patients and staff have a safe, clean environment.</p>
     <span class="btn-primary" style="display:inline-block;" data-editable="promise-btn" contenteditable="true">Call (514)-437-1299</span>
   </div>
-  <div class="teeth-row">
+  <div class="teeth-row" id="promiseImageWrap" style="position:relative;cursor:pointer;" onclick="uploadImage('promise-image', function(url){ var wrap=document.getElementById('promiseImageWrap'); var img=document.getElementById('promiseUploadedImg'); if(!img){img=document.createElement('img');img.id='promiseUploadedImg';img.style.cssText='max-width:320px;max-height:280px;width:100%;height:auto;object-fit:contain;border-radius:12px;';wrap.appendChild(img);} img.src=url; var svg=wrap.querySelector('svg'); if(svg) svg.style.display='none'; })">
+    <div class="admin-img-upload-overlay"><span>Change Image</span><small>Click to upload</small></div>
     <svg viewBox="0 0 320 280" width="320" height="280" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="t1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="100%" stop-color="#b8d8e8" stop-opacity="0.85"/></linearGradient>
@@ -1575,7 +1577,7 @@
     </div>
     <div class="footer-col">
       <h4 data-editable="footer-services-heading" contenteditable="true">Services</h4>
-      <ul>
+      <ul id="footerServicesList">
         <li><span data-editable="footer-svc-1" contenteditable="true">Cosmetic Dentistry</span></li>
         <li><span data-editable="footer-svc-2" contenteditable="true">Exams & Cleaning</span></li>
         <li><span data-editable="footer-svc-3" contenteditable="true">Emergency Care</span></li>
@@ -1598,6 +1600,7 @@
     <p data-editable="footer-copy" contenteditable="true">&copy; 2026 Clinique Dentaire d'Urgence et Familiale Angus-Maisonneuve. All rights reserved.</p>
     <span class="footer-phone" data-editable="footer-phone-bottom" contenteditable="true">(514)-437-1299</span>
   </div>
+  <div style="text-align:center;padding:0.8rem 0 0.4rem;font-size:0.65rem;color:rgba(255,255,255,0.25);letter-spacing:0.05em;">Powered by <a href="https://spaxio.ca" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.3s;">Spaxio.ca</a></div>
 </footer>
 
 <!-- Toast -->
@@ -1731,6 +1734,22 @@ function applyImages() {
       if (wrap) {
         wrap.innerHTML = '<img src="' + imgs['about-val-icon-' + i] + '" alt="Value icon" />';
       }
+    }
+  }
+  // Promise section image
+  if (imgs['promise-image']) {
+    const wrap = document.getElementById('promiseImageWrap');
+    if (wrap) {
+      let img = document.getElementById('promiseUploadedImg');
+      if (!img) {
+        img = document.createElement('img');
+        img.id = 'promiseUploadedImg';
+        img.style.cssText = 'max-width:320px;max-height:280px;width:100%;height:auto;object-fit:contain;border-radius:12px;';
+        wrap.appendChild(img);
+      }
+      img.src = imgs['promise-image'];
+      const svg = wrap.querySelector('svg');
+      if (svg) svg.style.display = 'none';
     }
   }
 }
@@ -1968,6 +1987,17 @@ function renderServices() {
       if (content.services[idx]) content.services[idx][field] = el.textContent.trim();
     });
   });
+
+  // Sync footer services list
+  renderFooterServices();
+}
+
+function renderFooterServices() {
+  const list = document.getElementById('footerServicesList');
+  if (!list || !content.services || !content.services.length) return;
+  list.innerHTML = content.services.map(svc => {
+    return '<li><span>' + esc(svc.title) + '</span></li>';
+  }).join('');
 }
 
 function addService() {
