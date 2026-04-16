@@ -3,398 +3,984 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel — Clinique Angus</title>
+  <title>Admin — Clinique Angus</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    /* ═══════════════════════════════════════════════════════════════
+       MAIN WEBSITE STYLES (copied from public/index.html)
+       ═══════════════════════════════════════════════════════════════ */
     :root {
-      --brand: #a3745b;
-      --brand-dark: #8b5e44;
-      --brand-light: #c49a7e;
       --navy: #152c3a;
-      --sidebar-w: 230px;
-      --topbar-h: 60px;
-      --bg: #f4f6f8;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #1e293b;
-      --muted: #64748b;
-      --danger: #ef4444;
-      --success: #22c55e;
+      --navy-mid: #1b3848;
+      --navy-light: #26505f;
+      --teal: #8b5e44;
+      --teal-light: #a3745b;
+      --bronze: #a3745b;
+      --bronze-light: #c49a7e;
+      --bronze-dark: #8b5e44;
+      --gold: #a3745b;
+      --gold-light: #c49a7e;
+      --cream: #f5efe8;
+      --white: #ffffff;
+      --gray: #9a8b7a;
+      --gray-light: #e8ddd2;
+      --text: #1e3a46;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'DM Sans', sans-serif;
     }
-
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    /* ── Topbar ── */
-    .topbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--topbar-h);
+      font-family: var(--font-body);
       background: var(--navy);
-      display: flex;
-      align-items: center;
-      padding: 0 1.5rem;
-      z-index: 200;
-      gap: 1rem;
-      border-bottom: 1px solid rgba(163,116,91,0.2);
+      color: var(--white);
+      overflow-x: hidden;
+      padding-top: 56px; /* admin bar */
     }
-    .topbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.9rem;
-      flex: 1;
-    }
-    .topbar-brand img { width: 32px; height: 32px; object-fit: contain; }
-    .topbar-brand span { color: var(--brand-light); font-size: 0.72rem; font-weight: 400; }
-    .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
-    .btn {
-      padding: 0.45rem 1rem;
-      border-radius: 6px;
-      border: none;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: inherit;
-    }
-    .btn-save { background: var(--brand); color: #fff; }
-    .btn-save:hover { background: var(--brand-dark); }
-    .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-logout {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.75);
-    }
-    .btn-logout:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
-    .save-status {
-      font-size: 0.78rem;
-      color: rgba(255,255,255,0.5);
-      min-width: 120px;
-      text-align: right;
-    }
-    .save-status.success { color: #86efac; }
-    .save-status.error { color: #fca5a5; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 2px; }
 
-    /* ── Sidebar ── */
-    .sidebar {
+    /* Navigation */
+    nav {
       position: fixed;
-      top: var(--topbar-h);
-      left: 0;
-      bottom: 0;
-      width: var(--sidebar-w);
-      background: #1e3a4a;
-      overflow-y: auto;
-      z-index: 100;
-      padding: 1rem 0;
-    }
-    .sidebar-section-label {
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
-      padding: 0.8rem 1.2rem 0.4rem;
-    }
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.6rem 1.2rem;
-      color: rgba(255,255,255,0.65);
-      cursor: pointer;
-      transition: all 0.15s;
-      border-left: 3px solid transparent;
-      font-size: 0.85rem;
-    }
-    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.06); }
-    .nav-item.active {
-      color: var(--brand-light);
-      border-left-color: var(--brand);
-      background: rgba(163,116,91,0.12);
-    }
-    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; }
-    .nav-item.active svg { opacity: 1; }
-
-    /* ── Main ── */
-    .main {
-      margin-left: var(--sidebar-w);
-      margin-top: var(--topbar-h);
-      padding: 2rem;
-      min-height: calc(100vh - var(--topbar-h));
-    }
-
-    /* ── Panels ── */
-    .panel { display: none; }
-    .panel.active { display: block; }
-    .panel-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.25rem;
-    }
-    .panel-subtitle {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 1.75rem;
-    }
-
-    /* ── Cards ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .card-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* ── Form elements ── */
-    .field { margin-bottom: 1rem; }
-    .field:last-child { margin-bottom: 0; }
-    .field label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
-    .field input[type="text"],
-    .field input[type="email"],
-    .field input[type="tel"],
-    .field textarea,
-    .field select {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 0.8rem;
-      font-size: 0.88rem;
-      font-family: inherit;
-      color: var(--text);
-      background: #fff;
-      transition: border-color 0.15s;
-      outline: none;
-      resize: vertical;
-    }
-    .field input:focus,
-    .field textarea:focus,
-    .field select:focus {
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(163,116,91,0.1);
-    }
-    .field textarea { min-height: 80px; }
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .field-row .field { margin-bottom: 0; }
-    .field-hint {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
-    .field-hint code {
-      background: #f1f5f9;
-      padding: 0.1em 0.3em;
-      border-radius: 3px;
-      font-family: monospace;
-    }
-
-    /* ── List items (doctors, services, testimonials) ── */
-    .list-header {
+      top: 56px;
+      left: 0; right: 0;
+      z-index: 1100;
+      padding: 1.2rem 4rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: background 0.4s, padding 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(10,22,40,0.92);
+      backdrop-filter: blur(20px);
+      padding: 0.8rem 4rem;
+      border-bottom: 1px solid rgba(163,116,91,0.15);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo-icon { width: 54px; height: 54px; object-fit: contain; }
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--white);
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+    .nav-logo-text span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--gold);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; align-items: center; gap: 1.4rem; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.73rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold) !important;
+      padding: 0.5rem 1.4rem;
+      border-radius: 2px;
+      font-size: 0.75rem !important;
+      letter-spacing: 0.1em !important;
+      transition: all 0.3s !important;
+    }
+    .nav-cta:hover { background: var(--gold) !important; color: var(--navy) !important; }
+    .nav-cta::after { display: none !important; }
+    .nav-phone { color: var(--bronze-light) !important; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 0 4rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 70% at 60% 40%, rgba(163,116,91,0.18) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 50% at 20% 80%, rgba(163,116,91,0.08) 0%, transparent 60%),
+                  linear-gradient(135deg, #152c3a 0%, #1b3848 50%, #132d3a 100%);
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 640px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(163,116,91,0.2);
+      border: 1px solid rgba(163,116,91,0.4);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bronze-light);
+      margin-bottom: 1.8rem;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--bronze-light);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title em { font-style: italic; color: var(--gold); }
+    .hero-subtitle {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      max-width: 460px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+    .hero-actions { display: flex; gap: 1rem; align-items: center; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--bronze-dark), var(--bronze));
+      color: white;
+      padding: 0.9rem 2.2rem;
+      border: none;
+      border-radius: 3px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 8px 30px rgba(163,116,91,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(163,116,91,0.5); }
+    .btn-secondary {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.3s;
+    }
+    .btn-secondary:hover { color: var(--gold); }
+    .btn-secondary svg { width: 16px; }
+    .hero-visual {
+      position: absolute;
+      right: 4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: clamp(300px, 40vw, 520px);
+      z-index: 2;
+    }
+    .tooth-container { position: relative; width: 100%; display: flex; justify-content: center; }
+    .tooth-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 550px; height: 550px;
+      background: radial-gradient(circle, rgba(163,116,91,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%,-50%) scale(1.1); }
+    }
+    .hero-logo-img {
+      width: 500px; height: auto;
+      position: relative; z-index: 2;
+      filter: drop-shadow(0 20px 60px rgba(163,116,91,0.5));
+      animation: logoFloat 6s ease-in-out infinite;
+    }
+    @keyframes logoFloat {
+      0% { transform: translateY(0px) rotate(0deg) scale(1); }
+      25% { transform: translateY(-12px) rotate(2deg) scale(1.02); }
+      50% { transform: translateY(-20px) rotate(0deg) scale(1.04); }
+      75% { transform: translateY(-10px) rotate(-2deg) scale(1.02); }
+      100% { transform: translateY(0px) rotate(0deg) scale(1); }
+    }
+    .hero-stats {
+      position: absolute;
+      bottom: 3rem; left: 4rem; right: 4rem;
+      display: flex; gap: 3rem;
+      z-index: 2;
+    }
+    .stat-item { display: flex; flex-direction: column; gap: 0.3rem; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .stat-divider { width: 1px; background: rgba(255,255,255,0.1); height: 40px; align-self: center; }
+
+    /* Emergency Banner */
+    .emergency-banner {
+      background: linear-gradient(135deg, var(--bronze-dark) 0%, #6e4a32 100%);
+      padding: 1.2rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .emergency-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px);
+    }
+    .emergency-text { display: flex; align-items: center; gap: 1rem; position: relative; }
+    .emergency-icon {
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .emergency-text h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem; font-weight: 500;
+    }
+    .emergency-text p { font-size: 0.82rem; opacity: 0.85; margin-top: 0.1rem; }
+    .emergency-phone {
+      font-family: var(--font-display);
+      font-size: 1.8rem; font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+      position: relative;
+    }
+
+    /* Sections */
+    section { position: relative; overflow: hidden; }
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
       margin-bottom: 1rem;
     }
-    .list-header h3 { font-size: 0.85rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .btn-add {
+    .section-label::before { content: ''; width: 30px; height: 1px; background: var(--bronze); }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.15;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    /* About */
+    .about { background: var(--cream); color: var(--text); padding: 7rem 4rem; }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .about .section-label { color: var(--bronze-dark); }
+    .about .section-label::before { background: var(--bronze-dark); }
+    .about .section-title { color: var(--navy); }
+    .about-text { font-size: 0.95rem; line-height: 1.8; color: #4a5568; margin-top: 1.5rem; }
+    .about-text p + p { margin-top: 1rem; }
+    .about-values { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 2rem; }
+    .about-value {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      border-left: 3px solid var(--bronze);
+    }
+    .about-value-icon { width: 36px; height: 36px; flex-shrink: 0; color: var(--bronze-dark); }
+    .about-value-icon-wrap {
+      width: 36px; height: 36px; flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
+      border-radius: 6px;
+      transition: outline-color 0.2s;
+      outline: 2px dashed transparent;
+      outline-offset: 3px;
+    }
+    .about-value-icon-wrap:hover {
+      outline-color: var(--bronze);
+    }
+    .about-value-icon-wrap img {
+      width: 36px; height: 36px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .about-value-text h4 { font-size: 0.85rem; font-weight: 600; color: var(--navy); margin-bottom: 0.25rem; }
+    .about-value-text p { font-size: 0.8rem; color: #6b7280; line-height: 1.6; }
+    .about-visual { position: relative; }
+    .about-image-wrap {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      background: linear-gradient(135deg, var(--navy-light), var(--bronze-dark));
+    }
+    .about-dental-anim { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .about-float-card {
+      position: absolute;
+      z-index: 10;
+      background: white;
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .about-float-card.card-1 { bottom: -1rem; left: -2rem; }
+    .about-float-card.card-2 { top: 2rem; right: -2rem; }
+    .float-card-icon {
+      width: 38px; height: 38px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--bronze-dark), var(--bronze));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 1.1rem;
+    }
+    .float-card-text strong { display: block; font-size: 0.85rem; color: var(--navy); font-weight: 600; }
+    .float-card-text span { font-size: 0.72rem; color: #9ca3af; }
+
+    /* Services */
+    .services { background: var(--navy); padding: 7rem 4rem; }
+    .services-header {
+      max-width: 1400px;
+      margin: 0 auto 4rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-auto-rows: 380px;
+      gap: 6px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .service-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 8px;
+      background: var(--navy-mid);
+    }
+    .svc-default {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem; padding: 1.5rem;
+      text-align: center;
+    }
+    .svc-icon { width: 64px; height: 64px; object-fit: contain; opacity: 0.8; }
+    .svc-icon-svg { width: 64px; height: 64px; }
+    .svc-default h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem; font-weight: 500;
+      color: var(--white); line-height: 1.25;
+    }
+    .svc-overlay {
+      position: absolute; inset: 0;
+      background: rgba(21,44,58,0.93);
+      padding: 1.8rem 1.6rem;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 3;
+      border-radius: 8px;
+    }
+    .service-card:hover .svc-overlay { opacity: 1; }
+    .svc-overlay-inner { transform: translateY(18px); transition: transform 0.35s ease; }
+    .service-card:hover .svc-overlay-inner { transform: translateY(0); }
+    .svc-overlay-inner h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem; font-weight: 500;
+      color: var(--white); margin-bottom: 0.55rem;
+    }
+    .svc-overlay-inner > p { color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.82rem; margin-bottom: 0.75rem; }
+    .svc-overlay-bullets {
+      list-style: none; padding: 0; margin: 0 0 1rem;
+      columns: 2; column-gap: 1rem;
+    }
+    .svc-overlay-bullets li {
+      color: rgba(255,255,255,0.75);
+      padding: 0.22rem 0;
+      font-size: 0.76rem;
+      break-inside: avoid;
+    }
+    .svc-overlay-bullets li::before {
+      content: '';
+      display: inline-block;
+      width: 5px; height: 5px;
+      background: var(--bronze);
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+    .svc-overlay .svc-cta {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0.4rem 0.9rem;
-      background: var(--brand);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s;
+      background: var(--bronze);
+      color: var(--white);
+      font-size: 0.78rem; font-weight: 500;
+      padding: 0.6rem 1.3rem;
+      border-radius: 5px;
+      text-decoration: none;
+      width: fit-content;
     }
-    .btn-add:hover { background: var(--brand-dark); }
+    .svc-cta-arrow { width: 14px; height: 14px; }
 
-    .list-items { display: flex; flex-direction: column; gap: 0.75rem; }
-
-    .list-item {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem;
-      background: #fafbfc;
-      position: relative;
-    }
-    .list-item-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.75rem;
-      gap: 0.5rem;
-    }
-    .list-item-handle {
-      color: var(--muted);
-      cursor: grab;
-      font-size: 1.2rem;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-    .list-item-title {
-      flex: 1;
-      font-weight: 500;
-      font-size: 0.88rem;
-      color: var(--text);
-    }
-    .btn-remove {
-      background: none;
-      border: 1px solid #fecaca;
-      color: var(--danger);
-      border-radius: 6px;
-      padding: 0.3rem 0.65rem;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      flex-shrink: 0;
-    }
-    .btn-remove:hover { background: #fef2f2; }
-
-    /* ── Image upload ── */
-    .img-upload-area {
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .img-upload-area:hover { border-color: var(--brand); }
-    .img-preview {
-      width: 64px;
-      height: 64px;
-      border-radius: 8px;
-      object-fit: cover;
-      background: #f1f5f9;
-      flex-shrink: 0;
+    /* Teeth Animation Section */
+    .teeth-anim-section {
+      background: linear-gradient(135deg, var(--navy-light), var(--navy));
+      padding: 5rem 4rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--muted);
-      font-size: 1.5rem;
-      border: 1px solid var(--border);
+      gap: 6rem;
+      overflow: hidden;
     }
-    .img-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
-    .img-upload-text { flex: 1; }
-    .img-upload-text strong { font-size: 0.85rem; color: var(--text); }
-    .img-upload-text p { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
-    .btn-upload {
-      padding: 0.4rem 0.9rem;
-      border: 1px solid var(--border);
+    .teeth-content { max-width: 480px; }
+    .teeth-content .section-title { color: white; }
+    .teeth-content p { font-size: 0.95rem; line-height: 1.8; color: rgba(255,255,255,0.6); margin: 1.5rem 0 2rem; }
+
+    /* Hours */
+    .hours-section {
+      background: var(--navy-mid);
+      padding: 7rem 4rem;
+    }
+    .hours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: center;
+    }
+    .hours-section .section-label { color: var(--gold); }
+    .hours-section .section-label::before { background: var(--gold); }
+    .hours-title { color: white; }
+    .hours-subtitle { font-size: 0.95rem; line-height: 1.8; color: rgba(255,255,255,0.55); margin: 1.5rem 0 2rem; }
+    .hours-table {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-day { font-size: 0.88rem; color: rgba(255,255,255,0.7); font-weight: 400; }
+    .hours-time { font-size: 0.88rem; font-weight: 500; }
+    .hours-time.open { color: var(--gold); }
+    .hours-time.emergency { color: var(--bronze-light); font-weight: 600; font-size: 0.95rem; }
+
+    /* Doctors */
+    .doctors { background: var(--cream); color: var(--text); padding: 7rem 4rem; }
+    .doctors .section-label { color: var(--bronze); }
+    .doctors .section-label::before { background: var(--bronze); }
+    .doctors .section-title { color: var(--navy); }
+    .doctors-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+    .doctors-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .doctor-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .doctor-card:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    .doctor-avatar {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, var(--navy-light) 0%, var(--bronze-dark) 100%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .doctor-avatar-svg { width: 70%; opacity: 0.9; }
+    .doctor-avatar-ring { position: absolute; inset: 0; border: 2px solid rgba(163,116,91,0.3); }
+    .doctor-info { padding: 1.2rem; }
+    .doctor-info h3 {
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 600;
+      color: var(--navy); line-height: 1.3;
+    }
+    .doctor-info .doctor-title {
+      font-size: 0.72rem;
+      color: var(--bronze-dark);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+      font-weight: 500;
+    }
+
+    /* Dr. Feature */
+    .dr-feature {
+      background: var(--navy-mid);
+      padding: 7rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .dr-feature::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(163,116,91,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .dr-feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 6rem; align-items: center;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .dr-avatar-large {
+      aspect-ratio: 3/4;
+      background: linear-gradient(160deg, var(--navy-light) 0%, var(--bronze-dark) 100%);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .dr-content .section-label::before { background: var(--gold); }
+    .dr-content .section-label { color: var(--gold); }
+    .dr-content .section-title { color: white; }
+    .dr-content .bio-text {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.65);
+      margin-top: 1.5rem;
+    }
+    .dr-credentials { display: flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
+    .credential-tag {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(163,116,91,0.1);
+      border: 1px solid rgba(163,116,91,0.25);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      color: var(--gold-light);
+    }
+
+    /* Testimonials */
+    .testimonials { background: var(--navy); padding: 7rem 4rem; }
+    .testimonials-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+    .testimonials-track {
+      display: flex; gap: 1.5rem;
+      max-width: 1200px; margin: 0 auto;
+      overflow-x: auto; padding-bottom: 1rem;
+      scrollbar-width: none;
+    }
+    .testimonials-track::-webkit-scrollbar { display: none; }
+    .testimonial-card {
+      background: var(--navy-mid);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 2rem;
+      min-width: 320px; max-width: 320px;
+      flex-shrink: 0;
+    }
+    .testimonial-stars { display: flex; gap: 0.2rem; margin-bottom: 1.2rem; }
+    .star { color: var(--gold); font-size: 0.9rem; }
+    .testimonial-text {
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-style: italic;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1.5rem;
+    }
+    .testimonial-author { display: flex; align-items: center; gap: 0.8rem; }
+    .author-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--bronze-dark), var(--bronze));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 600; color: white;
+      flex-shrink: 0;
+    }
+    .author-name { font-size: 0.82rem; font-weight: 600; color: white; }
+    .author-tag { font-size: 0.7rem; color: var(--bronze); margin-top: 0.1rem; }
+
+    /* Contact */
+    .contact { background: var(--cream); color: var(--text); padding: 7rem 4rem; }
+    .contact .section-label { color: var(--bronze-dark); }
+    .contact .section-label::before { background: var(--bronze-dark); }
+    .contact .section-title { color: var(--navy); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      max-width: 1200px;
+      margin: 3rem auto 0;
+      align-items: start;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-item {
+      display: flex; gap: 1.2rem;
+      align-items: flex-start;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+    }
+    .contact-item-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--bronze-dark), var(--bronze));
+      display: flex; align-items: center; justify-content: center;
+      color: white; flex-shrink: 0;
+    }
+    .contact-item-icon svg { width: 20px; height: 20px; }
+    .contact-item-text strong {
+      display: block; font-size: 0.8rem;
+      color: #9ca3af;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .contact-item-text span { font-size: 1rem; color: var(--navy); font-weight: 500; }
+    .contact-item-text a { color: var(--bronze-dark); text-decoration: none; font-size: 1rem; font-weight: 500; }
+    .contact-form-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    }
+    .contact-form-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem; font-weight: 500;
+      color: var(--navy); margin-bottom: 0.5rem;
+    }
+    .contact-form-card > p { font-size: 0.85rem; color: #9ca3af; margin-bottom: 1.8rem; }
+
+    /* Map */
+    .map-section { background: var(--navy-mid); padding: 2rem 4rem 4rem; }
+    .map-wrapper {
+      max-width: 1200px; margin: 0 auto;
+      border-radius: 12px; overflow: hidden;
+      height: 350px; position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .map-wrapper iframe { width: 100%; height: 100%; border: none; filter: grayscale(20%) contrast(1.1); }
+    .map-overlay-card {
+      position: absolute;
+      top: 1.5rem; left: 1.5rem;
+      background: var(--navy);
+      border-radius: 10px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      min-width: 220px;
+    }
+    .map-overlay-card h4 { font-family: var(--font-display); font-size: 0.95rem; color: white; margin-bottom: 0.3rem; }
+    .map-overlay-card p { font-size: 0.78rem; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+    /* Footer */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 3rem 4rem 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+    }
+    .footer-brand p { font-size: 0.85rem; color: rgba(255,255,255,0.45); line-height: 1.7; margin-top: 1rem; max-width: 320px; }
+    .footer-col h4 {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col ul a { font-size: 0.82rem; color: rgba(255,255,255,0.5); text-decoration: none; }
+    .footer-bottom {
+      max-width: 1200px; margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom p { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+    .footer-bottom .footer-phone {
+      font-family: var(--font-display);
+      font-size: 1.2rem; color: var(--bronze);
+      text-decoration: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ADMIN OVERLAY STYLES
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Floating admin bar */
+    .admin-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 9999;
+      border-bottom: 2px solid var(--bronze);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .admin-bar-left {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .admin-bar-badge {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(163,116,91,0.2);
+      border: 1px solid rgba(163,116,91,0.4);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bronze-light);
+    }
+    .admin-bar-badge::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .admin-bar-title {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+    }
+    .admin-bar-right { display: flex; align-items: center; gap: 0.6rem; }
+    .admin-btn {
+      padding: 0.4rem 1rem;
       border-radius: 6px;
-      background: #fff;
-      font-size: 0.8rem;
+      border: none;
+      font-size: 0.78rem;
       font-weight: 500;
       cursor: pointer;
-      color: var(--text);
+      font-family: inherit;
       transition: all 0.15s;
-      white-space: nowrap;
-    }
-    .btn-upload:hover { border-color: var(--brand); color: var(--brand); }
-    .btn-remove-img {
-      padding: 0.3rem 0.65rem;
-      border: 1px solid #fecaca;
-      border-radius: 6px;
-      background: none;
-      font-size: 0.78rem;
-      cursor: pointer;
-      color: var(--danger);
-      display: none;
-    }
-    .btn-remove-img.visible { display: inline-block; }
-
-    /* ── Bullets list ── */
-    .bullets-list { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.5rem; }
-    .bullet-row {
-      display: flex;
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
     }
-    .bullet-row input {
-      flex: 1;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.45rem 0.7rem;
-      font-size: 0.83rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.15s;
+    .admin-btn-save {
+      background: var(--bronze);
+      color: white;
     }
-    .bullet-row input:focus { border-color: var(--brand); }
-    .btn-remove-bullet {
-      background: none;
-      border: none;
-      color: var(--danger);
-      cursor: pointer;
-      font-size: 1.1rem;
-      line-height: 1;
-      padding: 0.2rem;
-      opacity: 0.6;
-      transition: opacity 0.15s;
-      flex-shrink: 0;
+    .admin-btn-save:hover { background: var(--bronze-dark); }
+    .admin-btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+    .admin-btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
     }
-    .btn-remove-bullet:hover { opacity: 1; }
-    .btn-add-bullet {
-      background: none;
-      border: 1px dashed var(--border);
-      color: var(--muted);
-      border-radius: 6px;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: inherit;
+    .admin-btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: white; }
+    .admin-save-status {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      min-width: 80px;
+      text-align: right;
     }
-    .btn-add-bullet:hover { border-color: var(--brand); color: var(--brand); }
+    .admin-save-status.success { color: #86efac; }
+    .admin-save-status.error { color: #fca5a5; }
 
-    /* ── Toast ── */
+    /* Editable elements */
+    [data-editable] {
+      position: relative;
+      cursor: text;
+      outline: 2px dashed transparent;
+      outline-offset: 4px;
+      transition: outline-color 0.2s, background 0.2s;
+      border-radius: 4px;
+    }
+    [data-editable]:hover {
+      outline-color: rgba(163,116,91,0.5);
+    }
+    [data-editable]:focus {
+      outline-color: var(--bronze) !important;
+      outline-style: solid !important;
+      background: rgba(163,116,91,0.08);
+    }
+    [data-editable][contenteditable="true"]::after {
+      content: '';
+      position: absolute;
+      top: -6px; right: -6px;
+      width: 16px; height: 16px;
+      background: var(--bronze);
+      border-radius: 50%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5'%3E%3Cpath d='M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7'/%3E%3Cpath d='M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 10px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      z-index: 10;
+    }
+    [data-editable]:hover::after { opacity: 1; }
+
+    /* Editable images */
+    [data-editable-img] {
+      cursor: pointer;
+      outline: 2px dashed transparent;
+      outline-offset: 4px;
+      transition: outline-color 0.2s;
+      border-radius: 4px;
+    }
+    [data-editable-img]:hover {
+      outline-color: rgba(163,116,91,0.5);
+    }
+
+    /* Section edit controls (add/remove for lists) */
+    .admin-section-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1rem 0;
+    }
+    .admin-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.2rem;
+      background: var(--bronze);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .admin-add-btn:hover { background: var(--bronze-dark); }
+    .admin-remove-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.2s;
+      line-height: 1;
+    }
+    .doctor-card:hover .admin-remove-btn,
+    .testimonial-card:hover .admin-remove-btn,
+    .service-card:hover .admin-remove-btn { opacity: 1; }
+
+    /* Photo upload overlay on doctor cards */
+    .admin-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 5;
+      cursor: pointer;
+    }
+    .doctor-avatar:hover .admin-photo-overlay { opacity: 1; }
+    .admin-photo-overlay span {
+      background: var(--bronze);
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Toast */
     .toast {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
+      bottom: 2rem; right: 2rem;
       padding: 0.75rem 1.25rem;
       border-radius: 8px;
       font-size: 0.88rem;
       font-weight: 500;
-      z-index: 9999;
+      z-index: 99999;
       pointer-events: none;
       transform: translateY(100px);
       opacity: 0;
@@ -404,463 +990,631 @@
     .toast.success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
     .toast.error { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
 
-    /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .sidebar { width: 200px; }
-      .main { margin-left: 200px; padding: 1.25rem; }
+    /* Image upload overlay (about section, dr feature) */
+    .admin-img-upload-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 5;
+      cursor: pointer;
+      border-radius: 12px;
     }
-    @media (max-width: 600px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; }
+    .about-image-wrap:hover .admin-img-upload-overlay,
+    .dr-avatar-large:hover .admin-img-upload-overlay { opacity: 1; }
+    .admin-img-upload-overlay span {
+      background: var(--bronze);
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .admin-img-upload-overlay small {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.7rem;
+    }
+    .about-image-wrap img.uploaded-img,
+    .dr-avatar-large img.uploaded-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border-radius: 12px;
+    }
+
+    /* SEO edit bar */
+    .admin-seo-bar {
+      background: #0f172a;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 4rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .admin-seo-bar .seo-field {
+      flex: 1;
+    }
+    .admin-seo-bar label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 0.3rem;
+    }
+    .admin-seo-bar input,
+    .admin-seo-bar textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      outline: none;
+      resize: none;
+      transition: border-color 0.2s;
+    }
+    .admin-seo-bar input:focus,
+    .admin-seo-bar textarea:focus {
+      border-color: var(--bronze);
+    }
+
+    /* Credential tag editable */
+    .credential-tag span[contenteditable="true"] {
+      cursor: text;
+      outline: none;
+      min-width: 50px;
+    }
+    .credential-tag span[contenteditable="true"]:hover {
+      text-decoration: underline;
+      text-decoration-style: dashed;
+      text-underline-offset: 3px;
+    }
+    .credential-tag span[contenteditable="true"]:focus {
+      text-decoration: none;
+      background: rgba(163,116,91,0.15);
+      border-radius: 3px;
+      padding: 0 4px;
+      margin: 0 -4px;
+    }
+
+    /* Map URL edit */
+    .admin-map-edit {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      max-width: 1200px;
+      margin: 0.75rem auto 0;
+    }
+    .admin-map-edit label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .admin-map-edit input {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      outline: none;
+    }
+    .admin-map-edit input:focus { border-color: var(--bronze); }
+
+    /* Service card edit mode - icon upload */
+    .admin-icon-overlay {
+      position: absolute;
+      top: 8px; left: 8px;
+      width: 32px; height: 32px;
+      background: var(--bronze);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.2s;
+      font-size: 0.85rem;
+    }
+    .service-card:hover .admin-icon-overlay { opacity: 1; }
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+      .services-grid { grid-template-columns: repeat(3, 1fr); }
+      .doctors-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .hero { padding: 0 2rem; }
+      .hero-visual { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 300px; }
+      .doctors-grid { grid-template-columns: repeat(2, 1fr); }
+      .dr-feature-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .hours-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      nav { padding: 1rem 2rem; }
+      .admin-bar-title { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Topbar ── -->
-<div class="topbar">
-  <div class="topbar-brand">
-    <img src="/logo.png" alt="Logo" />
-    Clinique Angus <span>&nbsp;Admin Panel</span>
+<!-- ═══════ ADMIN BAR ═══════ -->
+<div class="admin-bar">
+  <div class="admin-bar-left">
+    <div class="admin-bar-badge">EDIT MODE</div>
+    <span class="admin-bar-title">Click any text to edit. Hover images to replace.</span>
   </div>
-  <div class="topbar-actions">
-    <span class="save-status" id="saveStatus"></span>
-    <button class="btn btn-save" id="saveBtn" onclick="saveAll()">Save Changes</button>
-    <a href="/" class="btn btn-logout" style="text-decoration:none;display:inline-flex;align-items:center;">↗ View Site</a>
-    <button class="btn btn-logout" onclick="logout()">Logout</button>
-  </div>
-</div>
-
-<!-- ── Sidebar ── -->
-<div class="sidebar">
-  <div class="sidebar-section-label">Content</div>
-  <div class="nav-item active" data-panel="navigation" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    Navigation
-  </div>
-  <div class="nav-item" data-panel="hero" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
-    Hero Section
-  </div>
-  <div class="nav-item" data-panel="about" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-    About
-  </div>
-  <div class="nav-item" data-panel="services" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V5a3 3 0 0 0-3-3z"/></svg>
-    Services
-  </div>
-  <div class="nav-item" data-panel="promise" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
-    Our Promise
-  </div>
-  <div class="nav-item" data-panel="hours" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    Hours
-  </div>
-  <div class="nav-item" data-panel="team" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    Our Team
-  </div>
-  <div class="nav-item" data-panel="testimonials" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    Testimonials
-  </div>
-  <div class="nav-item" data-panel="contact" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9.4 19.79 19.79 0 0 1 1.61 4.93 2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.4a16 16 0 0 0 6.29 6.29l.87-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-    Contact
-  </div>
-  <div class="nav-item" data-panel="footer" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="21" x2="21" y2="21"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 21 9 10"/><polyline points="15 21 15 10"/><path d="M4 10l8-7 8 7"/></svg>
-    Footer
-  </div>
-  <div class="sidebar-section-label" style="margin-top:1rem;">Media</div>
-  <div class="nav-item" data-panel="logo" onclick="switchPanel(this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    Logo & Images
+  <div class="admin-bar-right">
+    <span class="admin-save-status" id="saveStatus"></span>
+    <button class="admin-btn admin-btn-save" id="saveBtn" onclick="saveAll()">Save Changes</button>
+    <a href="/" class="admin-btn admin-btn-ghost" target="_blank">View Site</a>
+    <button class="admin-btn admin-btn-ghost" onclick="logout()">Logout</button>
   </div>
 </div>
 
-<!-- ── Main content ── -->
-<div class="main">
+<!-- ═══════ SEO BAR ═══════ -->
+<div class="admin-seo-bar">
+  <div class="seo-field" style="flex:1.5;">
+    <label>Browser Tab Title (SEO)</label>
+    <input type="text" data-key="seo-title" id="seoTitle" value="" placeholder="Page title for search engines..." />
+  </div>
+  <div class="seo-field" style="flex:2;">
+    <label>Meta Description (SEO)</label>
+    <textarea data-key="seo-description" id="seoDesc" rows="1" placeholder="Description for search engine results..."></textarea>
+  </div>
+</div>
 
-  <!-- NAVIGATION -->
-  <div class="panel active" id="panel-navigation">
-    <div class="panel-title">Navigation</div>
-    <div class="panel-subtitle">Edit the navigation bar and mobile menu content.</div>
-    <div class="card">
-      <div class="card-title">Clinic Name &amp; Brand</div>
-      <div class="field-row">
-        <div class="field">
-          <label>Clinic Name (line 1)</label>
-          <input type="text" data-key="nav-name-1" value="Clinique Dentaire D'Urgence et Familiale" />
+<!-- ═══════ NAVIGATION (visual only) ═══════ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <img class="nav-logo-icon" src="/logo.png" alt="Logo" data-editable-img="logo" />
+    <div class="nav-logo-text">
+      <span class="editable-nav-name-1" data-editable="nav-name-1">Clinique Dentaire D'Urgence et Familiale</span>
+      <span data-editable="nav-name-2">Angus-Maisonneuve</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#doctors">Our Team</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" class="nav-phone" data-editable="contact-phone">(514)-437-1299</a></li>
+    <li><a href="#contact" class="nav-cta" data-editable="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span data-editable="hero-badge" contenteditable="true">Emergency Dental Care &middot; Montreal</span>
+    </div>
+    <h1 class="hero-title" data-editable="hero-title" contenteditable="true">
+      A Better Life Starts with a<br/><em>Beautiful Smile</em>
+    </h1>
+    <p class="hero-subtitle" data-editable="hero-subtitle" contenteditable="true">
+      Welcome to Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve — where personalized dental care meets genuine compassion. Open 7 days a week.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary" data-editable="hero-btn-primary" contenteditable="true">Book an Appointment</a>
+      <a href="#services" class="btn-secondary" data-editable="hero-btn-secondary" contenteditable="true">
+        Our Services
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="tooth-container">
+      <div class="tooth-glow"></div>
+      <img class="hero-logo-img" src="/logo.png" alt="Logo" data-editable-img="hero-logo" />
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num" data-editable="stat-1-num" contenteditable="true">7/7</span>
+      <span class="stat-label" data-editable="stat-1-label" contenteditable="true">Days Open</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" data-editable="stat-2-num" contenteditable="true">5</span>
+      <span class="stat-label" data-editable="stat-2-label" contenteditable="true">Dentists on Staff</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" data-editable="stat-3-num" contenteditable="true">12+</span>
+      <span class="stat-label" data-editable="stat-3-label" contenteditable="true">Services Offered</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" data-editable="stat-4-num" contenteditable="true">MTL</span>
+      <span class="stat-label" data-editable="stat-4-label" contenteditable="true">Greater Montreal</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ EMERGENCY BANNER ═══════ -->
+<div class="emergency-banner">
+  <div class="emergency-text">
+    <div class="emergency-icon">&#x1F9B7;</div>
+    <div>
+      <h3 data-editable="emergency-title" contenteditable="true">Dental Emergency? We're Here for You</h3>
+      <p data-editable="emergency-subtitle" contenteditable="true">Open 7 days a week &middot; Including weekends &middot; Serving Greater Montreal</p>
+    </div>
+  </div>
+  <span class="emergency-phone" data-editable="emergency-phone" contenteditable="true">(514)-437-1299</span>
+</div>
+
+<!-- ═══════ ABOUT ═══════ -->
+<section class="about" id="about">
+  <div class="about-grid">
+    <div>
+      <div class="section-label" data-editable="about-label" contenteditable="true">Who We Are</div>
+      <h2 class="section-title" data-editable="about-title" contenteditable="true">We Care for <em>You</em></h2>
+      <div class="about-text">
+        <p data-editable="about-text-1" contenteditable="true">Welcome to Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve. We are proud to provide personalized care tailored to your unique needs.</p>
+        <p data-editable="about-text-2" contenteditable="true">Our clinic's reputation is built on the commitment of our team members — properly informing patients and ensuring every step of the treatment plan is clearly understood.</p>
+      </div>
+      <div class="about-values">
+        <div class="about-value">
+          <div class="about-value-icon-wrap" id="aboutValIcon1" onclick="uploadValueIcon(1)" title="Click to change icon">
+            <svg class="about-value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="about-value-text">
+            <h4 data-editable="about-val-1-title" contenteditable="true">Patient-Centered Approach</h4>
+            <p data-editable="about-val-1-text" contenteditable="true">Every treatment plan is explained clearly and customized to your unique needs and concerns.</p>
+          </div>
         </div>
-        <div class="field">
-          <label>Clinic Name (line 2)</label>
-          <input type="text" data-key="nav-name-2" value="Angus-Maisonneuve" />
+        <div class="about-value">
+          <div class="about-value-icon-wrap" id="aboutValIcon2" onclick="uploadValueIcon(2)" title="Click to change icon">
+            <svg class="about-value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="about-value-text">
+            <h4 data-editable="about-val-2-title" contenteditable="true">Safe &amp; Clean Environment</h4>
+            <p data-editable="about-val-2-text" contenteditable="true">Proactive steps ensure patients and staff enjoy a safe, hygienic environment for all dental needs.</p>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Navigation Links &amp; CTA</div>
-      <div class="field-row">
-        <div class="field">
-          <label>Phone Number</label>
-          <input type="tel" data-key="contact-phone" id="navPhone" />
-        </div>
-        <div class="field">
-          <label>CTA Button Text</label>
-          <input type="text" data-key="nav-cta" />
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Page Title &amp; SEO</div>
-      <div class="field">
-        <label>Browser Tab Title</label>
-        <input type="text" id="seo-title" data-key="seo-title" value="Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve | Montreal Emergency Dentist" />
-      </div>
-      <div class="field">
-        <label>Meta Description</label>
-        <textarea data-key="seo-description" rows="2">Dental clinic in Montreal. Open 7 days a week. Emergency dental care available. Call (514)-437-1299.</textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- HERO -->
-  <div class="panel" id="panel-hero">
-    <div class="panel-title">Hero Section</div>
-    <div class="panel-subtitle">The first section visitors see when they land on the page.</div>
-    <div class="card">
-      <div class="card-title">Hero Text</div>
-      <div class="field">
-        <label>Badge Text</label>
-        <input type="text" data-key="hero-badge" />
-      </div>
-      <div class="field">
-        <label>Main Headline</label>
-        <input type="text" data-key="hero-title" />
-        <div class="field-hint">Supports HTML. Use <code>&lt;em&gt;text&lt;/em&gt;</code> for italic and <code>&lt;br/&gt;</code> for line breaks.</div>
-      </div>
-      <div class="field">
-        <label>Subtitle</label>
-        <textarea data-key="hero-subtitle" rows="3"></textarea>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Primary Button Text</label>
-          <input type="text" data-key="hero-btn-primary" />
-        </div>
-        <div class="field">
-          <label>Secondary Button Text</label>
-          <input type="text" data-key="hero-btn-secondary" />
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Stats Bar</div>
-      <div class="field-row">
-        <div class="field"><label>Stat 1 — Value</label><input type="text" data-key="stat-1-num" /></div>
-        <div class="field"><label>Stat 1 — Label</label><input type="text" data-key="stat-1-label" /></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Stat 2 — Value</label><input type="text" data-key="stat-2-num" /></div>
-        <div class="field"><label>Stat 2 — Label</label><input type="text" data-key="stat-2-label" /></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Stat 3 — Value</label><input type="text" data-key="stat-3-num" /></div>
-        <div class="field"><label>Stat 3 — Label</label><input type="text" data-key="stat-3-label" /></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Stat 4 — Value</label><input type="text" data-key="stat-4-num" /></div>
-        <div class="field"><label>Stat 4 — Label</label><input type="text" data-key="stat-4-label" /></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Emergency Banner</div>
-      <div class="field">
-        <label>Banner Headline</label>
-        <input type="text" data-key="emergency-title" />
-      </div>
-      <div class="field">
-        <label>Banner Subtitle</label>
-        <input type="text" data-key="emergency-subtitle" />
-      </div>
-      <div class="field">
-        <label>Emergency Phone</label>
-        <input type="tel" data-key="emergency-phone" />
-      </div>
-    </div>
-  </div>
-
-  <!-- ABOUT -->
-  <div class="panel" id="panel-about">
-    <div class="panel-title">About Section</div>
-    <div class="panel-subtitle">The "Who We Are" section of the website.</div>
-    <div class="card">
-      <div class="card-title">Section Header</div>
-      <div class="field-row">
-        <div class="field"><label>Label (small text)</label><input type="text" data-key="about-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="about-title" /></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Body Text</div>
-      <div class="field">
-        <label>Paragraph 1</label>
-        <textarea data-key="about-text-1" rows="4"></textarea>
-      </div>
-      <div class="field">
-        <label>Paragraph 2</label>
-        <textarea data-key="about-text-2" rows="4"></textarea>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Values (3 cards)</div>
-      <div class="field-row">
-        <div class="field"><label>Value 1 — Title</label><input type="text" data-key="about-val-1-title" /></div>
-        <div class="field"><label>Value 1 — Text</label><textarea data-key="about-val-1-text" rows="2"></textarea></div>
-      </div>
-      <div class="field-row" style="margin-top:0.75rem;">
-        <div class="field"><label>Value 2 — Title</label><input type="text" data-key="about-val-2-title" /></div>
-        <div class="field"><label>Value 2 — Text</label><textarea data-key="about-val-2-text" rows="2"></textarea></div>
-      </div>
-      <div class="field-row" style="margin-top:0.75rem;">
-        <div class="field"><label>Value 3 — Title</label><input type="text" data-key="about-val-3-title" /></div>
-        <div class="field"><label>Value 3 — Text</label><textarea data-key="about-val-3-text" rows="2"></textarea></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SERVICES -->
-  <div class="panel" id="panel-services">
-    <div class="panel-title">Services</div>
-    <div class="panel-subtitle">Add, remove, or edit service cards. Changes are saved when you click "Save Changes".</div>
-    <div class="card">
-      <div class="card-title">Section Header</div>
-      <div class="field-row">
-        <div class="field"><label>Label</label><input type="text" data-key="services-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="services-title" /></div>
-      </div>
-      <div class="field">
-        <label>Subtitle</label>
-        <textarea data-key="services-subtitle" rows="2"></textarea>
-      </div>
-    </div>
-    <div class="card">
-      <div class="list-header">
-        <h3>Service Cards</h3>
-        <button class="btn-add" onclick="addService()">+ Add Service</button>
-      </div>
-      <div class="list-items" id="servicesList"></div>
-    </div>
-  </div>
-
-  <!-- PROMISE -->
-  <div class="panel" id="panel-promise">
-    <div class="panel-title">Our Promise</div>
-    <div class="panel-subtitle">The promise / brand section with the animated teeth.</div>
-    <div class="card">
-      <div class="card-title">Content</div>
-      <div class="field-row">
-        <div class="field"><label>Label</label><input type="text" data-key="promise-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="promise-title" /></div>
-      </div>
-      <div class="field">
-        <label>Body Text</label>
-        <textarea data-key="promise-text" rows="4"></textarea>
-      </div>
-      <div class="field">
-        <label>Button Text</label>
-        <input type="text" data-key="promise-btn" />
-      </div>
-    </div>
-  </div>
-
-  <!-- HOURS -->
-  <div class="panel" id="panel-hours">
-    <div class="panel-title">Hours</div>
-    <div class="panel-subtitle">Edit opening hours for each day of the week.</div>
-    <div class="card">
-      <div class="card-title">Section Header</div>
-      <div class="field-row">
-        <div class="field"><label>Label</label><input type="text" data-key="hours-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="hours-title" /></div>
-      </div>
-      <div class="field">
-        <label>Subtitle</label>
-        <textarea data-key="hours-subtitle" rows="2"></textarea>
-      </div>
-      <div class="field">
-        <label>Button Text</label>
-        <input type="text" data-key="hours-btn" />
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Schedule</div>
-      <div class="field-row"><div class="field"><label>Monday</label><input type="text" data-key="hours-mon" /></div><div class="field"><label>Tuesday</label><input type="text" data-key="hours-tue" /></div></div>
-      <div class="field-row" style="margin-top:0.75rem;"><div class="field"><label>Wednesday</label><input type="text" data-key="hours-wed" /></div><div class="field"><label>Thursday</label><input type="text" data-key="hours-thu" /></div></div>
-      <div class="field-row" style="margin-top:0.75rem;"><div class="field"><label>Friday</label><input type="text" data-key="hours-fri" /></div><div class="field"><label>Saturday</label><input type="text" data-key="hours-sat" /></div></div>
-      <div class="field-row" style="margin-top:0.75rem;">
-        <div class="field"><label>Sunday</label><input type="text" data-key="hours-sun" /></div>
-        <div class="field"><label>Emergency Line</label><input type="tel" data-key="hours-emergency" /></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TEAM -->
-  <div class="panel" id="panel-team">
-    <div class="panel-title">Our Team</div>
-    <div class="panel-subtitle">Manage doctors/dentists and the featured bio section.</div>
-    <div class="card">
-      <div class="card-title">Section Header</div>
-      <div class="field-row">
-        <div class="field"><label>Label</label><input type="text" data-key="doctors-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="doctors-title" /></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="list-header">
-        <h3>Doctor Cards</h3>
-        <button class="btn-add" onclick="addDoctor()">+ Add Doctor</button>
-      </div>
-      <div class="list-items" id="doctorsList"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Featured Doctor Bio (Dr. Patel section)</div>
-      <div class="field-row">
-        <div class="field"><label>Label</label><input type="text" data-key="feature-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="feature-title" /></div>
-      </div>
-      <div class="field">
-        <label>Bio Paragraph 1</label>
-        <textarea data-key="feature-bio-1" rows="3"></textarea>
-      </div>
-      <div class="field">
-        <label>Bio Paragraph 2</label>
-        <textarea data-key="feature-bio-2" rows="3"></textarea>
-      </div>
-      <div class="field">
-        <label>Bio Paragraph 3</label>
-        <textarea data-key="feature-bio-3" rows="3"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- TESTIMONIALS -->
-  <div class="panel" id="panel-testimonials">
-    <div class="panel-title">Testimonials</div>
-    <div class="panel-subtitle">Manage patient reviews shown in the carousel.</div>
-    <div class="card">
-      <div class="card-title">Section Header</div>
-      <div class="field-row">
-        <div class="field"><label>Label</label><input type="text" data-key="testimonials-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="testimonials-title" /></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="list-header">
-        <h3>Reviews</h3>
-        <button class="btn-add" onclick="addTestimonial()">+ Add Review</button>
-      </div>
-      <div class="list-items" id="testimonialsList"></div>
-    </div>
-  </div>
-
-  <!-- CONTACT -->
-  <div class="panel" id="panel-contact">
-    <div class="panel-title">Contact Information</div>
-    <div class="panel-subtitle">Update clinic contact details shown across the website.</div>
-    <div class="card">
-      <div class="card-title">Section Header</div>
-      <div class="field-row">
-        <div class="field"><label>Label</label><input type="text" data-key="contact-label" /></div>
-        <div class="field"><label>Title</label><input type="text" data-key="contact-title" /></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Contact Details</div>
-      <div class="field-row">
-        <div class="field"><label>Phone Number</label><input type="tel" data-key="contact-phone" /></div>
-        <div class="field"><label>Email Address</label><input type="email" data-key="contact-email" /></div>
-      </div>
-      <div class="field-row" style="margin-top:0.75rem;">
-        <div class="field"><label>Street Address</label><input type="text" data-key="contact-address" /></div>
-        <div class="field"><label>City / Province / Postal Code</label><input type="text" data-key="contact-city" /></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="panel" id="panel-footer">
-    <div class="panel-title">Footer</div>
-    <div class="panel-subtitle">Edit footer content and contact info displayed in the footer.</div>
-    <div class="card">
-      <div class="card-title">Footer Description</div>
-      <div class="field">
-        <label>Description Text</label>
-        <textarea data-key="footer-desc" rows="3"></textarea>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Footer Contact Info</div>
-      <div class="field-row">
-        <div class="field"><label>Phone</label><input type="tel" data-key="footer-phone" /></div>
-        <div class="field"><label>Email</label><input type="email" data-key="footer-email" /></div>
-      </div>
-      <div class="field-row" style="margin-top:0.75rem;">
-        <div class="field"><label>Address Line</label><input type="text" data-key="footer-address" /></div>
-        <div class="field"><label>City / Province</label><input type="text" data-key="footer-city" /></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Copyright</div>
-      <div class="field">
-        <label>Copyright Text</label>
-        <input type="text" data-key="footer-copy" />
-      </div>
-    </div>
-  </div>
-
-  <!-- LOGO & IMAGES -->
-  <div class="panel" id="panel-logo">
-    <div class="panel-title">Logo &amp; Images</div>
-    <div class="panel-subtitle">Upload a new logo or replace images used on the website.</div>
-    <div class="card">
-      <div class="card-title">Clinic Logo</div>
-      <div class="img-upload-area" onclick="triggerImageUpload('logoUpload', 'logo', 'logoPreviewImg', 'logoRemoveBtn')">
-        <div class="img-preview" id="logoPreview">
-          <img src="/logo.png" alt="Logo" id="logoPreviewImg" />
-        </div>
-        <div class="img-upload-text">
-          <strong>Clinic Logo</strong>
-          <p>PNG or SVG recommended · Max 5MB</p>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <button class="btn-upload" onclick="event.stopPropagation();triggerImageUpload('logoUpload','logo','logoPreviewImg','logoRemoveBtn')">Upload</button>
-          <button class="btn-remove-img" id="logoRemoveBtn" onclick="event.stopPropagation();removeImage('logo','logoPreviewImg','logoRemoveBtn')">Remove</button>
+        <div class="about-value">
+          <div class="about-value-icon-wrap" id="aboutValIcon3" onclick="uploadValueIcon(3)" title="Click to change icon">
+            <svg class="about-value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="about-value-text">
+            <h4 data-editable="about-val-3-title" contenteditable="true">Open 7 Days a Week</h4>
+            <p data-editable="about-val-3-text" contenteditable="true">We are available when you need us most — including weekends and emergency situations.</p>
+          </div>
         </div>
       </div>
-      <input type="file" id="logoUpload" accept="image/*" style="display:none;" onchange="handleImageUpload(event,'logo','logoPreviewImg','logoRemoveBtn')" />
     </div>
-    <div class="card">
-      <div class="card-title">Service Icons</div>
-      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Upload icons for individual services. Icons are set per service in the <strong>Services</strong> panel.</p>
-      <div id="serviceIconsList"></div>
+    <div class="about-visual">
+      <div class="about-image-wrap" style="position:relative;cursor:pointer;" onclick="uploadImage('about-image', function(url){ var img = document.getElementById('aboutUploadedImg'); if(!img){img=document.createElement('img');img.id='aboutUploadedImg';img.className='uploaded-img';document.querySelector('.about-image-wrap').appendChild(img);} img.src=url; })">
+        <div class="about-dental-anim" id="aboutDefaultAnim">
+          <svg class="dental-chair-svg" viewBox="0 0 340 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="170" cy="200" r="160" fill="rgba(163,116,91,0.1)"/>
+            <rect x="60" y="200" width="220" height="70" rx="15" fill="#26505f" opacity="0.9"/>
+            <rect x="80" y="150" width="100" height="60" rx="12" fill="#26505f" opacity="0.9"/>
+            <rect x="80" y="70" width="55" height="90" rx="10" fill="#1b3848" opacity="0.9"/>
+            <rect x="60" y="195" width="30" height="12" rx="6" fill="#8b5e44" opacity="0.8"/>
+            <rect x="250" y="195" width="30" height="12" rx="6" fill="#8b5e44" opacity="0.8"/>
+            <rect x="155" y="270" width="30" height="60" rx="8" fill="#152c3a" opacity="0.9"/>
+            <rect x="110" y="325" width="120" height="20" rx="8" fill="#152c3a" opacity="0.8"/>
+            <line x1="200" y1="80" x2="200" y2="40" stroke="#a3745b" stroke-width="4" stroke-linecap="round"/>
+            <line x1="200" y1="40" x2="260" y2="40" stroke="#a3745b" stroke-width="4" stroke-linecap="round"/>
+            <line x1="260" y1="40" x2="260" y2="70" stroke="#a3745b" stroke-width="4" stroke-linecap="round"/>
+            <ellipse cx="260" cy="80" rx="30" ry="14" fill="#a3745b" opacity="0.9"/>
+            <ellipse cx="260" cy="78" rx="22" ry="8" fill="#e8d080" opacity="0.8"><animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/></ellipse>
+            <circle cx="107" cy="170" r="22" fill="#26505f" opacity="0.9"/>
+            <circle cx="107" cy="165" r="15" fill="#a3745b" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="admin-img-upload-overlay">
+          <span>Upload Image</span>
+          <small>Click to replace this illustration</small>
+        </div>
+      </div>
+      <div class="about-float-card card-1">
+        <div class="float-card-icon" data-editable="float-card-1-icon" contenteditable="true" title="Click to edit emoji">&#x1F9B7;</div>
+        <div class="float-card-text">
+          <strong data-editable="float-card-1-title" contenteditable="true">Open 7 Days</strong>
+          <span data-editable="float-card-1-text" contenteditable="true">Including Weekends</span>
+        </div>
+      </div>
+      <div class="about-float-card card-2">
+        <div class="float-card-icon" data-editable="float-card-2-icon" contenteditable="true" title="Click to edit emoji">&#x1F60A;</div>
+        <div class="float-card-text">
+          <strong data-editable="float-card-2-title" contenteditable="true">Welcoming Team</strong>
+          <span data-editable="float-card-2-text" contenteditable="true">Personalized Care</span>
+        </div>
+      </div>
     </div>
   </div>
+</section>
 
-</div><!-- .main -->
+<!-- ═══════ SERVICES ═══════ -->
+<section class="services" id="services">
+  <div class="services-header">
+    <div>
+      <div class="section-label" data-editable="services-label" contenteditable="true">What We Offer</div>
+      <h2 class="section-title" data-editable="services-title" contenteditable="true">Dentistry for <em>Today's</em> Lifestyle</h2>
+    </div>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.9rem; max-width:320px; line-height:1.7; text-align:right;" data-editable="services-subtitle" contenteditable="true">We have all your dental needs covered — from emergency care to cosmetic transformations.</p>
+  </div>
+  <div class="services-grid" id="servicesGrid">
+    <!-- Dynamically rendered -->
+  </div>
+  <div class="admin-section-controls">
+    <button class="admin-add-btn" onclick="addService()">+ Add Service</button>
+  </div>
+</section>
 
-<!-- Toast notification -->
+<!-- ═══════ OUR PROMISE ═══════ -->
+<section class="teeth-anim-section">
+  <div class="teeth-content">
+    <div class="section-label" data-editable="promise-label" contenteditable="true">Our Promise</div>
+    <h2 class="section-title" data-editable="promise-title" contenteditable="true">Friendly Clinic <em>Near You</em></h2>
+    <p data-editable="promise-text" contenteditable="true">At Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve, we've taken proactive steps to ensure patients and staff have a safe, clean environment.</p>
+    <span class="btn-primary" style="display:inline-block;" data-editable="promise-btn" contenteditable="true">Call (514)-437-1299</span>
+  </div>
+  <div class="teeth-row">
+    <svg viewBox="0 0 320 280" width="320" height="280" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="t1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="100%" stop-color="#b8d8e8" stop-opacity="0.85"/></linearGradient>
+        <linearGradient id="t2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e8f4f8" stop-opacity="0.9"/><stop offset="100%" stop-color="#9ec8dc" stop-opacity="0.8"/></linearGradient>
+        <filter id="ts"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#8b5e44" flood-opacity="0.3"/></filter>
+      </defs>
+      <path d="M10 100 Q160 85 310 100 L310 130 Q160 115 10 130Z" fill="#a3745b" opacity="0.3"/>
+      <g filter="url(#ts)"><path d="M15 98 C13 82 10 65 20 55 C25 50 32 52 36 58 C39 63 40 70 44 70 C48 70 50 63 53 58 C57 52 64 50 68 55 C78 65 76 82 74 98 C72 115 70 130 65 140 C61 150 57 158 52 160 C47 158 43 150 39 140 C34 130 32 115 30 105 Z" fill="url(#t1)"/><animate attributeName="transform" values="translate(0,0);translate(0,-5);translate(0,0)" dur="3s" repeatCount="indefinite"/></g>
+      <g filter="url(#ts)"><path d="M80 95 C79 78 78 60 86 52 C90 48 96 50 100 55 C103 60 105 68 108 68 C111 68 113 60 116 55 C120 50 126 48 130 52 C138 60 137 78 136 95 C135 112 132 128 128 138 C125 147 121 154 116 156 C111 154 107 147 104 138 C100 128 97 112 95 105 Z" fill="url(#t2)"/><animate attributeName="transform" values="translate(0,0);translate(0,-7);translate(0,0)" dur="3.5s" repeatCount="indefinite" begin="0.3s"/></g>
+      <g filter="url(#ts)"><path d="M143 93 C142 76 141 58 150 50 C155 45 162 47 165 53 C167 58 168 67 171 67 C174 67 175 58 178 53 C181 47 188 45 193 50 C202 58 201 76 200 93 C199 108 197 122 193 131 C190 139 186 145 180 147 C174 145 170 139 167 131 C163 122 161 108 158 100Z" fill="url(#t1)"/><animate attributeName="transform" values="translate(0,0);translate(0,-6);translate(0,0)" dur="4s" repeatCount="indefinite" begin="0.6s"/></g>
+      <g filter="url(#ts)"><path d="M207 90 C206 73 207 56 215 48 C219 44 226 46 229 52 C231 57 232 66 234 72 C236 66 237 57 240 52 C243 46 250 44 254 48 C262 56 263 73 262 90 C261 106 259 120 255 129 C252 136 248 142 242 144 C236 142 232 136 229 129 C225 120 223 106 221 98Z" fill="url(#t2)"/><animate attributeName="transform" values="translate(0,0);translate(0,-8);translate(0,0)" dur="3.2s" repeatCount="indefinite" begin="0.9s"/></g>
+      <g filter="url(#ts)"><path d="M270 98 C268 82 266 65 276 55 C281 50 288 52 292 58 C295 63 296 70 300 70 C304 70 306 63 309 58 C313 52 320 50 324 55 C332 65 330 82 328 98 C326 115 323 130 318 140 C314 150 310 158 305 160 C300 158 296 150 292 140 C287 130 284 115 281 105 Z" fill="url(#t1)"/><animate attributeName="transform" values="translate(0,0);translate(0,-5);translate(0,0)" dur="3.8s" repeatCount="indefinite" begin="1.2s"/></g>
+      <text x="160" y="268" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="11" font-family="DM Sans, sans-serif" letter-spacing="3">CLINIQUE ANGUS</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════ HOURS ═══════ -->
+<section class="hours-section" id="hours">
+  <div class="hours-grid">
+    <div>
+      <div class="section-label" data-editable="hours-label" contenteditable="true">When We're Open</div>
+      <h2 class="section-title hours-title" data-editable="hours-title" contenteditable="true">Open 7 Days, <em>Including Weekends</em></h2>
+      <p class="hours-subtitle" data-editable="hours-subtitle" contenteditable="true">We are open 7 days a week — making us one of the most accessible dental offices across Greater Montreal.</p>
+      <span class="btn-primary" style="display:inline-block;" data-editable="hours-btn" contenteditable="true">Call for Appointment</span>
+    </div>
+    <div class="hours-table">
+      <div class="hours-row"><span class="hours-day">Monday</span><span class="hours-time open" data-editable="hours-mon" contenteditable="true">8:00 AM – 8:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Tuesday</span><span class="hours-time open" data-editable="hours-tue" contenteditable="true">8:00 AM – 8:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Wednesday</span><span class="hours-time open" data-editable="hours-wed" contenteditable="true">8:00 AM – 8:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Thursday</span><span class="hours-time open" data-editable="hours-thu" contenteditable="true">8:00 AM – 8:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Friday</span><span class="hours-time open" data-editable="hours-fri" contenteditable="true">8:00 AM – 6:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time open" data-editable="hours-sat" contenteditable="true">9:00 AM – 5:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-time open" data-editable="hours-sun" contenteditable="true">10:00 AM – 3:00 PM</span></div>
+      <div class="hours-row" style="background: rgba(163,116,91,0.08);"><span class="hours-day" style="color:var(--gold);">Emergency Line</span><span class="hours-time emergency" data-editable="hours-emergency" contenteditable="true">(514)-437-1299</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ DOCTORS ═══════ -->
+<section class="doctors" id="doctors">
+  <div class="doctors-header">
+    <div class="section-label" style="justify-content:center;" data-editable="doctors-label" contenteditable="true">Meet The Doctors</div>
+    <h2 class="section-title" style="text-align:center;" data-editable="doctors-title" contenteditable="true">Bringing Life to <em>Your Smile</em></h2>
+  </div>
+  <div class="doctors-grid" id="doctorsGrid">
+    <!-- Dynamically rendered -->
+  </div>
+  <div class="admin-section-controls">
+    <button class="admin-add-btn" onclick="addDoctor()">+ Add Doctor</button>
+  </div>
+</section>
+
+<!-- ═══════ DR. FEATURE ═══════ -->
+<section class="dr-feature">
+  <div class="dr-feature-grid">
+    <div class="dr-avatar-large" style="position:relative;cursor:pointer;" onclick="uploadImage('feature-photo', function(url){ var img = document.getElementById('drFeatureImg'); if(!img){img=document.createElement('img');img.id='drFeatureImg';img.className='uploaded-img';document.querySelector('.dr-avatar-large').appendChild(img);} img.src=url; })">
+      <svg width="100%" height="100%" viewBox="0 0 280 380" fill="none" id="drFeatureSvg">
+        <defs><linearGradient id="drGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#26505f"/><stop offset="100%" stop-color="#8b5e44"/></linearGradient></defs>
+        <rect width="280" height="380" fill="url(#drGrad)"/>
+        <circle cx="140" cy="100" r="55" fill="rgba(255,255,255,0.2)"/>
+        <circle cx="140" cy="95" r="42" fill="rgba(255,255,255,0.25)"/>
+        <path d="M60 220 C60 175 95 160 140 160 C185 160 220 175 220 220 L220 380 L60 380Z" fill="rgba(255,255,255,0.18)"/>
+        <rect x="105" y="165" width="70" height="80" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="115" y="165" width="50" height="4" fill="rgba(163,116,91,0.6)"/>
+        <path d="M115 200 C112 195 110 190 113 186 C116 182 122 183 124 188 C126 193 123 198 120 202 C117 206 120 214 126 216 C136 220 144 214 141 206" stroke="#a3745b" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="142" cy="203" r="6" fill="#a3745b" opacity="0.8"/>
+        <rect x="20" y="340" width="240" height="40" rx="0" fill="rgba(10,22,40,0.7)"/>
+        <text x="140" y="358" text-anchor="middle" fill="white" font-size="13" font-family="Cormorant Garamond, serif" font-weight="500">Dr. Jitesh Patel, D.M.D</text>
+        <text x="140" y="372" text-anchor="middle" fill="rgba(163,116,91,0.8)" font-size="9" font-family="DM Sans, sans-serif" letter-spacing="2">GENERAL DENTIST</text>
+      </svg>
+      <div class="admin-img-upload-overlay">
+        <span>Upload Photo</span>
+        <small>Click to add featured doctor photo</small>
+      </div>
+    </div>
+    <div class="dr-content">
+      <div class="section-label" data-editable="feature-label" contenteditable="true">Committed to Excellence</div>
+      <h2 class="section-title" data-editable="feature-title" contenteditable="true">We Create <em>Beautiful</em><br/>and Brighter Smiles</h2>
+      <p class="bio-text" data-editable="feature-bio-1" contenteditable="true">Dr. Jitesh Patel has been working as a general dentist since graduating from McGill University in 2015.</p>
+      <p class="bio-text" style="margin-top:0.8rem;" data-editable="feature-bio-2" contenteditable="true">He also works as a clinical instructor for the Faculty of Dentistry at McGill's Oral Diagnostic Clinic.</p>
+      <p class="bio-text" style="margin-top:0.8rem;" data-editable="feature-bio-3" contenteditable="true">Before practicing dentistry, Dr. Patel worked as an engineer for 17 years for Ericsson Canada Inc.</p>
+      <div class="dr-credentials">
+        <div class="credential-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg><span contenteditable="true" data-editable="feature-cred-1">McGill University D.M.D</span></div>
+        <div class="credential-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg><span contenteditable="true" data-editable="feature-cred-2">Concordia M.T.M 2008</span></div>
+        <div class="credential-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg><span contenteditable="true" data-editable="feature-cred-3">17 Years Engineering</span></div>
+        <div class="credential-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg><span contenteditable="true" data-editable="feature-cred-4">McGill Clinical Instructor</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TESTIMONIALS ═══════ -->
+<section class="testimonials" id="testimonials">
+  <div class="testimonials-header">
+    <div class="section-label" style="justify-content:center;" data-editable="testimonials-label" contenteditable="true">Happy Stories</div>
+    <h2 class="section-title" style="text-align:center; color:white;" data-editable="testimonials-title" contenteditable="true">Creating <em>Vibrant Smiles</em><br/>for Healthy Lifestyles</h2>
+  </div>
+  <div class="testimonials-track" id="testimonialsTrack">
+    <!-- Dynamically rendered -->
+  </div>
+  <div class="admin-section-controls">
+    <button class="admin-add-btn" onclick="addTestimonial()">+ Add Review</button>
+  </div>
+</section>
+
+<!-- ═══════ CONTACT ═══════ -->
+<section class="contact" id="contact">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="section-label" data-editable="contact-label" contenteditable="true">Get In Touch</div>
+    <h2 class="section-title" style="color: var(--navy);" data-editable="contact-title" contenteditable="true">How to <em>Find Us</em></h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="contact-item">
+        <div class="contact-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div class="contact-item-text">
+          <strong>Address</strong>
+          <span data-editable="contact-address" contenteditable="true">2933 Sherbrooke est</span><br/>
+          <span data-editable="contact-city" contenteditable="true">Montreal, Quebec H1W1B2</span>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.13-1.13a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.1z"/></svg></div>
+        <div class="contact-item-text">
+          <strong>Phone</strong>
+          <span data-editable="contact-phone-display" contenteditable="true">(514)-437-1299</span>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div class="contact-item-text">
+          <strong>Email</strong>
+          <span data-editable="contact-email" contenteditable="true">clinique.angus@outlook.com</span>
+        </div>
+      </div>
+      <div class="contact-item" style="background: linear-gradient(135deg, var(--bronze-dark), var(--bronze)); border-left: none;">
+        <div class="contact-item-icon" style="background: rgba(255,255,255,0.2);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="contact-item-text">
+          <strong style="color:rgba(255,255,255,0.7);">Emergency Line</strong>
+          <span style="color:white; font-size:1.2rem;" data-editable="contact-emergency-phone" contenteditable="true">(514)-437-1299</span>
+          <span style="font-size:0.75rem; color:rgba(255,255,255,0.7); display:block; margin-top:0.2rem;" data-editable="contact-emergency-note" contenteditable="true">Call for dental emergencies</span>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form-card">
+      <h3 data-editable="form-title" contenteditable="true">Book an Appointment</h3>
+      <p data-editable="form-subtitle" contenteditable="true">Fill out the form below and our team will contact you promptly.</p>
+      <div style="padding:2rem; background:#f8f9fa; border-radius:8px; text-align:center; color:#6b7280; font-size:0.85rem;">
+        Contact form is shown on the live site.
+      </div>
+      <div style="margin-top:1rem;">
+        <label style="display:block;font-size:0.75rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#6b7280;margin-bottom:0.4rem;">Submit Button Text</label>
+        <span data-editable="form-submit-btn" contenteditable="true" style="display:inline-block;background:linear-gradient(135deg,var(--bronze-dark),var(--bronze));color:white;padding:0.7rem 2rem;border-radius:6px;font-size:0.82rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;">Send Message &rarr;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ MAP ═══════ -->
+<div class="map-section">
+  <div class="map-wrapper">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2796.7!2d-73.546!3d45.534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a4e3!2s2933+Sherbrooke+Est%2C+Montr%C3%A9al%2C+QC+H1W+1B2!5e0!3m2!1sen!2sca!4v1"
+      allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      title="Clinic location map"
+    ></iframe>
+    <div class="map-overlay-card">
+      <h4 data-editable="map-clinic-name" contenteditable="true">Clinique Dentaire D'Urgence et Familiale Angus-Maisonneuve</h4>
+      <p data-editable="map-address" contenteditable="true">2933 Sherbrooke est<br/>Montreal, Quebec H1W1B2</p>
+    </div>
+  </div>
+  <div class="admin-map-edit">
+    <label>Map Embed URL</label>
+    <input type="text" id="mapEmbedUrl" data-key="map-embed-url" placeholder="Google Maps embed URL..." />
+  </div>
+</div>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo" style="text-decoration:none;">
+        <img src="/logo.png" alt="Logo" width="36" height="36" style="object-fit:contain;" data-editable-img="logo" />
+        <div class="nav-logo-text">
+          <span style="display:inline;font-size:inherit;color:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:none;" data-editable="footer-brand-name-1" contenteditable="true">Clinique Dentaire D'Urgence et Familiale</span>
+          <span data-editable="footer-brand-name-2" contenteditable="true">Angus-Maisonneuve</span>
+        </div>
+      </a>
+      <p data-editable="footer-desc" contenteditable="true">Providing personalized, compassionate dental care to the Montreal community. Open 7 days a week.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-editable="footer-services-heading" contenteditable="true">Services</h4>
+      <ul>
+        <li><span data-editable="footer-svc-1" contenteditable="true">Cosmetic Dentistry</span></li>
+        <li><span data-editable="footer-svc-2" contenteditable="true">Exams & Cleaning</span></li>
+        <li><span data-editable="footer-svc-3" contenteditable="true">Emergency Care</span></li>
+        <li><span data-editable="footer-svc-4" contenteditable="true">Fillings & Crowns</span></li>
+        <li><span data-editable="footer-svc-5" contenteditable="true">Root Canals</span></li>
+        <li><span data-editable="footer-svc-6" contenteditable="true">Implants</span></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-editable="footer-contact-heading" contenteditable="true">Contact</h4>
+      <ul>
+        <li><span data-editable="footer-phone" contenteditable="true">(514)-437-1299</span></li>
+        <li><span data-editable="footer-email" contenteditable="true">clinique.angus@outlook.com</span></li>
+        <li><span data-editable="footer-address" contenteditable="true">2933 Sherbrooke est, Montreal</span></li>
+        <li><span data-editable="footer-city" contenteditable="true">Quebec, H1W1B2</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p data-editable="footer-copy" contenteditable="true">&copy; 2026 Clinique Dentaire d'Urgence et Familiale Angus-Maisonneuve. All rights reserved.</p>
+    <span class="footer-phone" data-editable="footer-phone-bottom" contenteditable="true">(514)-437-1299</span>
+  </div>
+</footer>
+
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Hidden file inputs -->
+<input type="file" id="imgUpload" accept="image/*" style="display:none;" />
+
 <script>
-// ── State ──────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// ADMIN LOGIC
+// ═══════════════════════════════════════════════════════════════
+
 let content = { text: {}, images: {}, doctors: [], services: [], testimonials: [] };
 let token = '';
 
-// ── Auth ───────────────────────────────────────────────────────
+// ── Auth ──
 function getToken() {
   const t = localStorage.getItem('adminToken');
   if (!t) { window.location.replace('/admin/login'); return null; }
@@ -877,13 +1631,12 @@ function getToken() {
     return null;
   }
 }
-
 function logout() {
   localStorage.removeItem('adminToken');
   window.location.replace('/admin/login');
 }
 
-// ── API helpers ────────────────────────────────────────────────
+// ── API ──
 async function apiFetch(url, options = {}) {
   options.headers = { ...options.headers, Authorization: 'Bearer ' + token };
   const res = await fetch(url, options);
@@ -891,7 +1644,7 @@ async function apiFetch(url, options = {}) {
   return res;
 }
 
-// ── Toast ──────────────────────────────────────────────────────
+// ── Toast ──
 function showToast(msg, type = 'success') {
   const toast = document.getElementById('toast');
   toast.textContent = msg;
@@ -900,60 +1653,120 @@ function showToast(msg, type = 'success') {
   toast._timer = setTimeout(() => { toast.className = 'toast ' + type; }, 3000);
 }
 
-// ── Panel switching ────────────────────────────────────────────
-function switchPanel(el) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  const panelId = 'panel-' + el.getAttribute('data-panel');
-  document.getElementById(panelId).classList.add('active');
-}
-
-// ── Load content ───────────────────────────────────────────────
+// ── Load content ──
 async function loadContent() {
   const res = await apiFetch('/admin/api/content');
   if (!res || !res.ok) return;
   content = await res.json();
-  populateFields();
+  applyTextToDOM();
   renderDoctors();
   renderServices();
   renderTestimonials();
-  renderServiceIcons();
-  updateLogoPreview();
+  applyImages();
 }
 
-function populateFields() {
+function applyTextToDOM() {
   const text = content.text || {};
-  // Populate all [data-key] inputs/textareas
+  document.querySelectorAll('[data-editable]').forEach(el => {
+    const key = el.getAttribute('data-editable');
+    if (text[key] !== undefined) {
+      el.innerHTML = text[key];
+    }
+    if (!el.hasAttribute('contenteditable')) {
+      el.setAttribute('contenteditable', 'true');
+    }
+  });
+  // Populate [data-key] fields (SEO, map URL)
   document.querySelectorAll('[data-key]').forEach(el => {
     const key = el.getAttribute('data-key');
     if (text[key] !== undefined) {
       el.value = text[key];
     }
   });
+  // Populate map embed URL into iframe
+  if (text['map-embed-url']) {
+    const iframe = document.querySelector('.map-wrapper iframe');
+    if (iframe) iframe.src = text['map-embed-url'];
+  }
 }
 
-// ── Collect current field values ───────────────────────────────
-function collectTextFields() {
+function applyImages() {
+  const imgs = content.images || {};
+  if (imgs.logo) {
+    document.querySelectorAll('.nav-logo-icon, [data-editable-img="hero-logo"]').forEach(img => {
+      if (img.tagName === 'IMG') img.src = imgs.logo;
+    });
+    document.querySelectorAll('footer .nav-logo img, [data-editable-img="logo"]').forEach(img => {
+      if (img.tagName === 'IMG') img.src = imgs.logo;
+    });
+  }
+  // About section image
+  if (imgs['about-image']) {
+    const wrap = document.querySelector('.about-image-wrap');
+    let img = document.getElementById('aboutUploadedImg');
+    if (!img) {
+      img = document.createElement('img');
+      img.id = 'aboutUploadedImg';
+      img.className = 'uploaded-img';
+      wrap.appendChild(img);
+    }
+    img.src = imgs['about-image'];
+  }
+  // Dr Feature photo
+  if (imgs['feature-photo']) {
+    const wrap = document.querySelector('.dr-avatar-large');
+    let img = document.getElementById('drFeatureImg');
+    if (!img) {
+      img = document.createElement('img');
+      img.id = 'drFeatureImg';
+      img.className = 'uploaded-img';
+      wrap.appendChild(img);
+    }
+    img.src = imgs['feature-photo'];
+  }
+  // Value card icons
+  for (let i = 1; i <= 3; i++) {
+    if (imgs['about-val-icon-' + i]) {
+      const wrap = document.getElementById('aboutValIcon' + i);
+      if (wrap) {
+        wrap.innerHTML = '<img src="' + imgs['about-val-icon-' + i] + '" alt="Value icon" />';
+      }
+    }
+  }
+}
+
+// ── Collect all editable text from DOM ──
+function collectText() {
   const text = { ...(content.text || {}) };
+  document.querySelectorAll('[data-editable]').forEach(el => {
+    const key = el.getAttribute('data-editable');
+    text[key] = el.innerHTML.trim();
+  });
+  // Collect [data-key] fields (SEO, map URL)
   document.querySelectorAll('[data-key]').forEach(el => {
     const key = el.getAttribute('data-key');
     text[key] = el.value;
   });
+  // Sync contact-phone from nav to the real key
+  if (text['contact-phone-display']) {
+    text['contact-phone'] = text['contact-phone-display'];
+  }
+  if (text['footer-phone-bottom']) {
+    // Keep footer-phone in sync
+    if (!text['footer-phone']) text['footer-phone'] = text['footer-phone-bottom'];
+  }
   return text;
 }
 
-// ── Save all ───────────────────────────────────────────────────
+// ── Save ──
 async function saveAll() {
   const btn = document.getElementById('saveBtn');
   const statusEl = document.getElementById('saveStatus');
   btn.disabled = true;
-  btn.textContent = 'Saving…';
-  statusEl.className = 'save-status';
-  statusEl.textContent = '';
+  btn.textContent = 'Saving...';
 
   const payload = {
-    text: collectTextFields(),
+    text: collectText(),
     images: content.images,
     doctors: content.doctors,
     services: content.services,
@@ -967,189 +1780,119 @@ async function saveAll() {
       body: JSON.stringify(payload)
     });
     if (res && res.ok) {
-      showToast('✓ Changes saved successfully!', 'success');
-      statusEl.className = 'save-status success';
+      showToast('Changes saved successfully!', 'success');
+      statusEl.className = 'admin-save-status success';
       statusEl.textContent = 'Saved';
       content.text = payload.text;
     } else {
       throw new Error('Save failed');
     }
   } catch {
-    showToast('✗ Failed to save. Try again.', 'error');
-    statusEl.className = 'save-status error';
+    showToast('Failed to save. Try again.', 'error');
+    statusEl.className = 'admin-save-status error';
     statusEl.textContent = 'Error';
   }
-
   btn.disabled = false;
   btn.textContent = 'Save Changes';
-  setTimeout(() => { statusEl.textContent = ''; statusEl.className = 'save-status'; }, 4000);
+  setTimeout(() => { statusEl.textContent = ''; statusEl.className = 'admin-save-status'; }, 4000);
 }
 
-// ── Image upload ───────────────────────────────────────────────
-function triggerImageUpload(inputId) {
-  document.getElementById(inputId).click();
-}
-
-async function handleImageUpload(event, imageKey, previewImgId, removeBtnId) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showToast('Image too large (max 5MB)', 'error'); return; }
-
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const base64 = e.target.result;
-    try {
-      const res = await apiFetch('/admin/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: base64, filename: file.name })
-      });
-      if (!res || !res.ok) throw new Error('Upload failed');
-      const data = await res.json();
-      if (!content.images) content.images = {};
-      content.images[imageKey] = data.url;
-      document.getElementById(previewImgId).src = data.url;
-      document.getElementById(previewImgId).style.display = 'block';
-      const removeBtn = document.getElementById(removeBtnId);
-      if (removeBtn) removeBtn.classList.add('visible');
-      showToast('Image uploaded!', 'success');
-    } catch {
-      showToast('Image upload failed.', 'error');
-    }
+// ── Image upload helper ──
+function uploadImage(imageKey, callback) {
+  const input = document.getElementById('imgUpload');
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('Image too large (max 5MB)', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const res = await apiFetch('/admin/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: ev.target.result, filename: file.name })
+        });
+        if (!res || !res.ok) throw new Error();
+        const data = await res.json();
+        if (!content.images) content.images = {};
+        content.images[imageKey] = data.url;
+        if (callback) callback(data.url);
+        showToast('Image uploaded!', 'success');
+      } catch { showToast('Upload failed.', 'error'); }
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
   };
-  reader.readAsDataURL(file);
-  event.target.value = '';
+  input.click();
 }
 
-function removeImage(imageKey, previewImgId, removeBtnId) {
-  if (!content.images) content.images = {};
-  content.images[imageKey] = null;
-  const img = document.getElementById(previewImgId);
-  if (img) { img.src = ''; img.style.display = 'none'; }
-  const btn = document.getElementById(removeBtnId);
-  if (btn) btn.classList.remove('visible');
-}
+// ── Image click handlers ──
+document.querySelectorAll('[data-editable-img]').forEach(img => {
+  img.style.cursor = 'pointer';
+  img.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const key = img.getAttribute('data-editable-img');
+    uploadImage(key, (url) => {
+      img.src = url;
+      applyImages();
+    });
+  });
+});
 
-function updateLogoPreview() {
-  const logo = content.images && content.images.logo;
-  if (logo) {
-    document.getElementById('logoPreviewImg').src = logo;
-    document.getElementById('logoRemoveBtn').classList.add('visible');
-  }
-}
+// ═══════ DOCTORS ═══════
+const DOC_GRADIENTS = [
+  'linear-gradient(135deg, #152c3a 0%, #a3745b 100%)',
+  'linear-gradient(135deg, #26505f 0%, #a3745b 100%)',
+  'linear-gradient(135deg, #6e4a32 0%, #26505f 100%)',
+  'linear-gradient(135deg, #1b3848 0%, #8b5e44 100%)',
+  'linear-gradient(135deg, #26505f 0%, #c49a7e 100%)',
+];
 
-// ── Service Icons panel ────────────────────────────────────────
-function renderServiceIcons() {
-  const container = document.getElementById('serviceIconsList');
-  if (!container) return;
-  container.innerHTML = (content.services || []).map((svc, i) => {
-    const imgSrc = svc.icon || '';
-    const inputId = 'svc-icon-file-' + i;
-    const previewId = 'svc-icon-preview-' + i;
-    const removeBtnId = 'svc-icon-remove-' + i;
+function renderDoctors() {
+  const grid = document.getElementById('doctorsGrid');
+  grid.innerHTML = (content.doctors || []).map((doc, i) => {
+    const gradient = DOC_GRADIENTS[i % DOC_GRADIENTS.length];
+    const avatarContent = doc.photo
+      ? `<img src="${esc(doc.photo)}" alt="${esc(doc.name)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" />`
+      : `<svg class="doctor-avatar-svg" viewBox="0 0 100 120" fill="none">
+          <circle cx="50" cy="38" r="28" fill="rgba(255,255,255,0.15)"/>
+          <ellipse cx="50" cy="35" rx="14" ry="16" fill="rgba(255,255,255,0.3)"/>
+          <path d="M20 80 C20 60 35 55 50 55 C65 55 80 60 80 80 L80 120 L20 120Z" fill="rgba(255,255,255,0.15)"/>
+          <path d="M38 75 C38 72 42 70 45 72 C48 74 46 78 44 80" stroke="#a3745b" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="57" cy="78" r="3" fill="#a3745b" opacity="0.7"/>
+        </svg>`;
     return `
-      <div style="display:flex;align-items:center;gap:1rem;padding:0.75rem 0;border-bottom:1px solid var(--border);">
-        <div class="img-preview" id="${previewId}">
-          ${imgSrc ? `<img src="${imgSrc}" alt="${svc.title}" />` : '<span style="font-size:1.2rem;">📷</span>'}
+      <div class="doctor-card" style="position:relative;">
+        <button class="admin-remove-btn" onclick="removeDoctor(${i})" title="Remove doctor">&times;</button>
+        <div class="doctor-avatar" style="background:${gradient};position:relative;">
+          ${avatarContent}
+          <div class="doctor-avatar-ring"></div>
+          <div class="admin-photo-overlay" onclick="uploadDoctorPhoto(${i})">
+            <span>${doc.photo ? 'Change Photo' : 'Upload Photo'}</span>
+          </div>
         </div>
-        <div style="flex:1;">
-          <strong style="font-size:0.85rem;">${svc.title}</strong>
+        <div class="doctor-info">
+          <h3 contenteditable="true" data-doc-idx="${i}" data-doc-field="name">${esc(doc.name)}</h3>
+          <div class="doctor-title" contenteditable="true" data-doc-idx="${i}" data-doc-field="title">${esc(doc.title)}</div>
         </div>
-        <button class="btn-upload" onclick="document.getElementById('${inputId}').click()">Upload Icon</button>
-        <button class="btn-remove-img ${imgSrc ? 'visible' : ''}" id="${removeBtnId}" onclick="removeSvcIcon(${i},'${previewId}','${removeBtnId}')">Remove</button>
-        <input type="file" id="${inputId}" accept="image/*" style="display:none;" onchange="handleSvcIconUpload(event,${i},'${previewId}','${removeBtnId}')" />
       </div>`;
   }).join('');
-}
 
-async function handleSvcIconUpload(event, idx, previewId, removeBtnId) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showToast('Image too large (max 5MB)', 'error'); return; }
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const res = await apiFetch('/admin/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: e.target.result, filename: file.name })
-      });
-      if (!res || !res.ok) throw new Error();
-      const data = await res.json();
-      content.services[idx].icon = data.url;
-      const preview = document.getElementById(previewId);
-      preview.innerHTML = `<img src="${data.url}" alt="icon" />`;
-      document.getElementById(removeBtnId).classList.add('visible');
-      // Update in services list UI too
-      const iconInputInList = document.querySelector(`#servicesList [data-svc-index="${idx}"] [data-svc-icon]`);
-      if (iconInputInList) iconInputInList.value = data.url;
-      showToast('Icon uploaded!', 'success');
-    } catch { showToast('Upload failed.', 'error'); }
-  };
-  reader.readAsDataURL(file);
-  event.target.value = '';
-}
-
-function removeSvcIcon(idx, previewId, removeBtnId) {
-  content.services[idx].icon = null;
-  document.getElementById(previewId).innerHTML = '<span style="font-size:1.2rem;">📷</span>';
-  document.getElementById(removeBtnId).classList.remove('visible');
-}
-
-// ── Doctors ────────────────────────────────────────────────────
-function renderDoctors() {
-  const list = document.getElementById('doctorsList');
-  if (!list) return;
-  list.innerHTML = '';
-  (content.doctors || []).forEach((doc, i) => {
-    list.appendChild(buildDoctorItem(doc, i));
+  // Wire up inline editing
+  grid.querySelectorAll('[data-doc-idx]').forEach(el => {
+    el.addEventListener('blur', () => {
+      const idx = parseInt(el.getAttribute('data-doc-idx'));
+      const field = el.getAttribute('data-doc-field');
+      if (content.doctors[idx]) content.doctors[idx][field] = el.textContent.trim();
+    });
   });
-}
-
-function buildDoctorItem(doc, i) {
-  const div = document.createElement('div');
-  div.className = 'list-item';
-  div.setAttribute('data-doc-index', i);
-  const photoPreviewId = 'doc-photo-preview-' + i;
-  const photoInputId = 'doc-photo-file-' + i;
-  const photoRemoveBtnId = 'doc-photo-remove-' + i;
-  div.innerHTML = `
-    <div class="list-item-header">
-      <span class="list-item-handle">⠿</span>
-      <span class="list-item-title">Doctor ${i + 1}</span>
-      <button class="btn-remove" onclick="removeDoctor(${i})">Remove</button>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Full Name</label><input type="text" data-doc-name="${i}" value="${esc(doc.name)}" /></div>
-      <div class="field"><label>Title / Credentials</label><input type="text" data-doc-title="${i}" value="${esc(doc.title)}" /></div>
-    </div>
-    <div class="field" style="margin-top:0.75rem;">
-      <label>Photo</label>
-      <div class="img-upload-area" onclick="document.getElementById('${photoInputId}').click()" style="padding:0.75rem;">
-        <div class="img-preview" id="${photoPreviewId}" style="width:48px;height:48px;">
-          ${doc.photo ? `<img src="${doc.photo}" alt="${doc.name}" />` : '<span style="font-size:1rem;">👤</span>'}
-        </div>
-        <div class="img-upload-text"><strong>${doc.photo ? 'Change photo' : 'Upload photo'}</strong><p>JPG or PNG · Max 5MB</p></div>
-        <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('${photoInputId}').click()">Upload</button>
-        <button class="btn-remove-img ${doc.photo ? 'visible' : ''}" id="${photoRemoveBtnId}" onclick="event.stopPropagation();removeDocPhoto(${i},'${photoPreviewId}','${photoRemoveBtnId}')">Remove</button>
-      </div>
-      <input type="file" id="${photoInputId}" accept="image/*" style="display:none;" onchange="handleDocPhotoUpload(event,${i},'${photoPreviewId}','${photoRemoveBtnId}')" />
-    </div>`;
-  // Wire up name/title changes
-  div.querySelector(`[data-doc-name="${i}"]`).addEventListener('input', (e) => {
-    content.doctors[i].name = e.target.value;
-    div.querySelector('.list-item-title').textContent = e.target.value || 'Doctor ' + (i + 1);
-  });
-  div.querySelector(`[data-doc-title="${i}"]`).addEventListener('input', (e) => {
-    content.doctors[i].title = e.target.value;
-  });
-  return div;
 }
 
 function addDoctor() {
-  const newDoc = { id: 'doc-' + Date.now(), name: 'New Doctor', title: 'D.M.D · Dentist', photo: null };
-  content.doctors.push(newDoc);
+  content.doctors.push({ id: 'doc-' + Date.now(), name: 'New Doctor', title: 'D.M.D · Dentist', photo: null });
   renderDoctors();
+  showToast('Doctor added. Edit name and title inline.', 'success');
 }
 
 function removeDoctor(i) {
@@ -1158,204 +1901,190 @@ function removeDoctor(i) {
   renderDoctors();
 }
 
-async function handleDocPhotoUpload(event, i, previewId, removeBtnId) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showToast('Image too large', 'error'); return; }
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const res = await apiFetch('/admin/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: e.target.result, filename: file.name })
-      });
-      if (!res || !res.ok) throw new Error();
-      const data = await res.json();
-      content.doctors[i].photo = data.url;
-      const preview = document.getElementById(previewId);
-      preview.innerHTML = `<img src="${data.url}" alt="photo" />`;
-      document.getElementById(removeBtnId).classList.add('visible');
-      showToast('Photo uploaded!', 'success');
-    } catch { showToast('Upload failed.', 'error'); }
+function uploadDoctorPhoto(i) {
+  const input = document.getElementById('imgUpload');
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('Image too large', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const res = await apiFetch('/admin/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: ev.target.result, filename: file.name })
+        });
+        if (!res || !res.ok) throw new Error();
+        const data = await res.json();
+        content.doctors[i].photo = data.url;
+        renderDoctors();
+        showToast('Photo uploaded!', 'success');
+      } catch { showToast('Upload failed.', 'error'); }
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
   };
-  reader.readAsDataURL(file);
-  event.target.value = '';
+  input.click();
 }
 
-function removeDocPhoto(i, previewId, removeBtnId) {
-  content.doctors[i].photo = null;
-  document.getElementById(previewId).innerHTML = '<span style="font-size:1rem;">👤</span>';
-  document.getElementById(removeBtnId).classList.remove('visible');
-}
-
-// ── Services ───────────────────────────────────────────────────
+// ═══════ SERVICES ═══════
 function renderServices() {
-  const list = document.getElementById('servicesList');
-  if (!list) return;
-  list.innerHTML = '';
-  (content.services || []).forEach((svc, i) => {
-    list.appendChild(buildServiceItem(svc, i));
-  });
-}
-
-function buildServiceItem(svc, i) {
-  const div = document.createElement('div');
-  div.className = 'list-item';
-  div.setAttribute('data-svc-index', i);
-
-  const iconPreviewId = 'svc-icon-preview-list-' + i;
-  const iconInputId = 'svc-icon-file-list-' + i;
-  const iconRemoveBtnId = 'svc-icon-remove-list-' + i;
-  const bulletsId = 'svc-bullets-' + i;
-
-  div.innerHTML = `
-    <div class="list-item-header">
-      <span class="list-item-handle">⠿</span>
-      <span class="list-item-title">${esc(svc.title)}</span>
-      <button class="btn-remove" onclick="removeService(${i})">Remove</button>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Service Title</label><input type="text" data-svc-field="title" value="${esc(svc.title)}" /></div>
-      <div class="field">
-        <label>Icon</label>
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <div class="img-preview" id="${iconPreviewId}" style="width:40px;height:40px;flex-shrink:0;">
-            ${svc.icon ? `<img src="${svc.icon}" alt="icon" />` : '<span>📷</span>'}
-          </div>
-          <button class="btn-upload" onclick="document.getElementById('${iconInputId}').click()" style="flex-shrink:0;">Upload Icon</button>
-          <button class="btn-remove-img ${svc.icon ? 'visible' : ''}" id="${iconRemoveBtnId}" onclick="removeSvcIconInList(${i},'${iconPreviewId}','${iconRemoveBtnId}')">✕</button>
-          <input type="file" id="${iconInputId}" accept="image/*" style="display:none;" onchange="handleSvcIconInList(event,${i},'${iconPreviewId}','${iconRemoveBtnId}')" />
+  const grid = document.getElementById('servicesGrid');
+  grid.innerHTML = (content.services || []).map((svc, i) => {
+    const iconHTML = svc.icon
+      ? `<img class="svc-icon" src="${esc(svc.icon)}" alt="${esc(svc.title)}" />`
+      : `<svg class="svc-icon-svg" viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="34" fill="rgba(163,116,91,0.25)" stroke="rgba(163,116,91,0.4)" stroke-width="1.5"/>
+          <path d="M40 22v16M40 38l10 10M40 38l-10 10" stroke="#a3745b" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`;
+    const bulletsHTML = (svc.bullets || []).map(b => `<li>${esc(b)}</li>`).join('');
+    return `
+      <div class="service-card" style="position:relative;">
+        <button class="admin-remove-btn" onclick="removeService(${i})" title="Remove service">&times;</button>
+        <button class="admin-icon-overlay" onclick="event.stopPropagation();uploadServiceIcon(${i})" title="Change icon">&#x1F4F7;</button>
+        <div class="svc-default">
+          ${iconHTML}
+          <h3 contenteditable="true" data-svc-idx="${i}" data-svc-field="title">${esc(svc.title)}</h3>
         </div>
-      </div>
-    </div>
-    <div class="field">
-      <label>Description</label>
-      <textarea data-svc-field="description" rows="2">${esc(svc.description || '')}</textarea>
-    </div>
-    <div class="field">
-      <label>Bullet Points</label>
-      <div class="bullets-list" id="${bulletsId}">
-        ${(svc.bullets || []).map((b, bi) => `
-          <div class="bullet-row">
-            <input type="text" value="${esc(b)}" data-bullet-idx="${bi}" />
-            <button class="btn-remove-bullet" onclick="removeBullet(${i},${bi})">×</button>
-          </div>`).join('')}
-      </div>
-      <button class="btn-add-bullet" onclick="addBullet(${i})">+ Add bullet</button>
-    </div>`;
+        <div class="svc-overlay">
+          <div class="svc-overlay-inner">
+            <h3>${esc(svc.title)}</h3>
+            <p contenteditable="true" data-svc-idx="${i}" data-svc-field="description">${esc(svc.description || '')}</p>
+            <ul class="svc-overlay-bullets">${bulletsHTML}</ul>
+            <a href="#" class="svc-cta" onclick="event.preventDefault();editServiceBullets(${i})">Edit Bullets
+              <svg class="svc-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 
-  // Wire up field changes
-  div.querySelector('[data-svc-field="title"]').addEventListener('input', (e) => {
-    content.services[i].title = e.target.value;
-    div.querySelector('.list-item-title').textContent = e.target.value || 'Service ' + (i + 1);
-  });
-  div.querySelector('[data-svc-field="description"]').addEventListener('input', (e) => {
-    content.services[i].description = e.target.value;
-  });
-  div.querySelectorAll('[data-bullet-idx]').forEach((input) => {
-    const bi = parseInt(input.getAttribute('data-bullet-idx'));
-    input.addEventListener('input', (e) => {
-      if (!content.services[i].bullets) content.services[i].bullets = [];
-      content.services[i].bullets[bi] = e.target.value;
+  // Wire up inline editing
+  grid.querySelectorAll('[data-svc-idx]').forEach(el => {
+    el.addEventListener('blur', () => {
+      const idx = parseInt(el.getAttribute('data-svc-idx'));
+      const field = el.getAttribute('data-svc-field');
+      if (content.services[idx]) content.services[idx][field] = el.textContent.trim();
     });
   });
-
-  return div;
-}
-
-async function handleSvcIconInList(event, i, previewId, removeBtnId) {
-  await handleSvcIconUpload(event, i, previewId, removeBtnId);
-  // Update list item title icon preview
-  const previewInList = document.getElementById(previewId);
-  if (content.services[i].icon) {
-    previewInList.innerHTML = `<img src="${content.services[i].icon}" alt="icon" />`;
-  }
-}
-
-function removeSvcIconInList(i, previewId, removeBtnId) {
-  content.services[i].icon = null;
-  document.getElementById(previewId).innerHTML = '<span>📷</span>';
-  document.getElementById(removeBtnId).classList.remove('visible');
 }
 
 function addService() {
-  const newSvc = { id: 'svc-' + Date.now(), icon: null, title: 'New Service', description: '', bullets: [] };
-  content.services.push(newSvc);
+  content.services.push({ id: 'svc-' + Date.now(), icon: null, title: 'New Service', description: '', bullets: [] });
   renderServices();
-  renderServiceIcons();
+  showToast('Service added. Edit title by clicking on it.', 'success');
 }
 
 function removeService(i) {
   if (!confirm('Remove this service?')) return;
   content.services.splice(i, 1);
   renderServices();
-  renderServiceIcons();
 }
 
-function addBullet(svcIdx) {
-  if (!content.services[svcIdx].bullets) content.services[svcIdx].bullets = [];
-  content.services[svcIdx].bullets.push('');
+function uploadServiceIcon(i) {
+  const input = document.getElementById('imgUpload');
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('Image too large', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const res = await apiFetch('/admin/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: ev.target.result, filename: file.name })
+        });
+        if (!res || !res.ok) throw new Error();
+        const data = await res.json();
+        content.services[i].icon = data.url;
+        renderServices();
+        showToast('Icon uploaded!', 'success');
+      } catch { showToast('Upload failed.', 'error'); }
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  };
+  input.click();
+}
+
+function editServiceBullets(i) {
+  const svc = content.services[i];
+  const current = (svc.bullets || []).join('\n');
+  const result = prompt('Edit bullet points (one per line):', current);
+  if (result === null) return;
+  svc.bullets = result.split('\n').map(b => b.trim()).filter(b => b);
   renderServices();
 }
 
-function removeBullet(svcIdx, bulletIdx) {
-  content.services[svcIdx].bullets.splice(bulletIdx, 1);
-  renderServices();
+// ═══════ VALUE CARD ICONS ═══════
+function uploadValueIcon(idx) {
+  const input = document.getElementById('imgUpload');
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('Image too large', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const res = await apiFetch('/admin/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: ev.target.result, filename: file.name })
+        });
+        if (!res || !res.ok) throw new Error();
+        const data = await res.json();
+        if (!content.images) content.images = {};
+        content.images['about-val-icon-' + idx] = data.url;
+        const wrap = document.getElementById('aboutValIcon' + idx);
+        if (wrap) {
+          wrap.innerHTML = '<img src="' + data.url + '" alt="Value icon" />';
+        }
+        showToast('Icon uploaded!', 'success');
+      } catch { showToast('Upload failed.', 'error'); }
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  };
+  input.click();
 }
 
-// ── Testimonials ───────────────────────────────────────────────
+// ═══════ TESTIMONIALS ═══════
 function renderTestimonials() {
-  const list = document.getElementById('testimonialsList');
-  if (!list) return;
-  list.innerHTML = '';
-  (content.testimonials || []).forEach((t, i) => {
-    list.appendChild(buildTestimonialItem(t, i));
-  });
-}
+  const track = document.getElementById('testimonialsTrack');
+  track.innerHTML = (content.testimonials || []).map((t, i) => {
+    return `
+      <div class="testimonial-card" style="position:relative;">
+        <button class="admin-remove-btn" onclick="removeTestimonial(${i})" title="Remove review">&times;</button>
+        <div class="testimonial-stars">
+          <span class="star">&#x2605;</span><span class="star">&#x2605;</span><span class="star">&#x2605;</span><span class="star">&#x2605;</span><span class="star">&#x2605;</span>
+        </div>
+        <p class="testimonial-text" contenteditable="true" data-testi-idx="${i}" data-testi-field="text">${esc(t.text)}</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" contenteditable="true" data-testi-idx="${i}" data-testi-field="avatar">${esc(t.avatar)}</div>
+          <div>
+            <div class="author-name" contenteditable="true" data-testi-idx="${i}" data-testi-field="author">${esc(t.author)}</div>
+            <div class="author-tag" contenteditable="true" data-testi-idx="${i}" data-testi-field="tag">${esc(t.tag)}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 
-function buildTestimonialItem(t, i) {
-  const div = document.createElement('div');
-  div.className = 'list-item';
-  div.innerHTML = `
-    <div class="list-item-header">
-      <span class="list-item-handle">⠿</span>
-      <span class="list-item-title">${esc(t.author)} — ${esc(t.tag)}</span>
-      <button class="btn-remove" onclick="removeTestimonial(${i})">Remove</button>
-    </div>
-    <div class="field">
-      <label>Review Text</label>
-      <textarea data-testi-field="text" rows="3">${esc(t.text)}</textarea>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Author Name</label><input type="text" data-testi-field="author" value="${esc(t.author)}" /></div>
-      <div class="field"><label>Avatar Initials (2 letters)</label><input type="text" data-testi-field="avatar" value="${esc(t.avatar)}" maxlength="3" /></div>
-    </div>
-    <div class="field">
-      <label>Tag (e.g. Verified Patient)</label>
-      <input type="text" data-testi-field="tag" value="${esc(t.tag)}" />
-    </div>`;
-
-  div.querySelector('[data-testi-field="text"]').addEventListener('input', (e) => {
-    content.testimonials[i].text = e.target.value;
+  // Wire up inline editing
+  track.querySelectorAll('[data-testi-idx]').forEach(el => {
+    el.addEventListener('blur', () => {
+      const idx = parseInt(el.getAttribute('data-testi-idx'));
+      const field = el.getAttribute('data-testi-field');
+      if (content.testimonials[idx]) content.testimonials[idx][field] = el.textContent.trim();
+    });
   });
-  div.querySelector('[data-testi-field="author"]').addEventListener('input', (e) => {
-    content.testimonials[i].author = e.target.value;
-    div.querySelector('.list-item-title').textContent = e.target.value + ' — ' + content.testimonials[i].tag;
-  });
-  div.querySelector('[data-testi-field="avatar"]').addEventListener('input', (e) => {
-    content.testimonials[i].avatar = e.target.value.toUpperCase();
-  });
-  div.querySelector('[data-testi-field="tag"]').addEventListener('input', (e) => {
-    content.testimonials[i].tag = e.target.value;
-    div.querySelector('.list-item-title').textContent = content.testimonials[i].author + ' — ' + e.target.value;
-  });
-  return div;
 }
 
 function addTestimonial() {
   content.testimonials.push({ id: 't-' + Date.now(), text: '"Your review here."', author: 'Patient', avatar: 'PX', tag: 'Verified Patient' });
   renderTestimonials();
+  showToast('Review added. Edit text by clicking on it.', 'success');
 }
 
 function removeTestimonial(i) {
@@ -1364,12 +2093,39 @@ function removeTestimonial(i) {
   renderTestimonials();
 }
 
-// ── Utility ────────────────────────────────────────────────────
+// ── Utility ──
 function esc(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Init ───────────────────────────────────────────────────────
+// ── Nav scroll ──
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── Smooth scroll ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// ── Prevent navigation on editable links ──
+document.addEventListener('click', (e) => {
+  const editable = e.target.closest('[contenteditable="true"]');
+  if (editable && editable.tagName === 'A') {
+    e.preventDefault();
+  }
+});
+
+// ── Init ──
 (async function init() {
   token = getToken();
   if (!token) return;

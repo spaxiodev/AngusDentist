@@ -1938,14 +1938,14 @@
           </div>
         </div>
         <div class="about-float-card card-1">
-          <div class="float-card-icon">🦷</div>
+          <div class="float-card-icon" data-editable="float-card-1-icon">🦷</div>
           <div class="float-card-text">
             <strong data-editable="float-card-1-title">Open 7 Days</strong>
             <span data-editable="float-card-1-text">Including Weekends</span>
           </div>
         </div>
         <div class="about-float-card card-2">
-          <div class="float-card-icon">😊</div>
+          <div class="float-card-icon" data-editable="float-card-2-icon">😊</div>
           <div class="float-card-text">
             <strong data-editable="float-card-2-title">Welcoming Team</strong>
             <span data-editable="float-card-2-text">Personalized Care</span>
@@ -2714,11 +2714,10 @@
       }
     });
 
-    // Contact form — POST to backend API
-    async function handleFormSubmit(e) {
+    // Contact form — open user's default email app with form data pre-filled
+    function handleFormSubmit(e) {
       e.preventDefault();
       const form = e.target;
-      const btn = document.getElementById('submitBtn');
       const feedback = document.getElementById('formFeedback');
 
       // Basic client-side check
@@ -2730,45 +2729,25 @@
         return;
       }
 
-      btn.textContent = 'Sending…';
-      btn.disabled = true;
-      feedback.style.display = 'none';
+      const email   = form.email.value.trim();
+      const service = form.service.value.trim();
+      const message = form.message.value.trim();
 
-      try {
-        const res = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            firstName,
-            lastName,
-            phone,
-            email:   form.email.value.trim(),
-            service: form.service.value.trim(),
-            message: form.message.value.trim()
-          })
-        });
+      const subject = service
+        ? `Appointment Request – ${service} – ${firstName} ${lastName}`
+        : `Appointment Request – ${firstName} ${lastName}`;
 
-        const data = await res.json();
+      const bodyLines = [
+        `Name: ${firstName} ${lastName}`,
+        `Phone: ${phone}`,
+        email ? `Email: ${email}` : '',
+        service ? `Service: ${service}` : '',
+        '',
+        message || ''
+      ].filter(line => line !== '').join('\n');
 
-        if (res.ok) {
-          showFeedback(feedback, '✓ Your request has been received. We\'ll contact you shortly!', 'success');
-          form.reset();
-          btn.textContent = 'Message Sent ✓';
-          btn.style.background = 'linear-gradient(135deg, #16a34a, #22c55e)';
-        } else {
-          throw new Error(data.error || 'Something went wrong');
-        }
-      } catch (err) {
-        showFeedback(feedback, `✗ ${err.message}`, 'error');
-        btn.textContent = 'Send Message →';
-        btn.style.background = '';
-      } finally {
-        btn.disabled = false;
-        setTimeout(() => {
-          btn.textContent = 'Send Message →';
-          btn.style.background = '';
-        }, 6000);
-      }
+      const mailto = `mailto:clinique.angus@outlook.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines)}`;
+      window.location.href = mailto;
     }
 
     function showFeedback(el, msg, type) {

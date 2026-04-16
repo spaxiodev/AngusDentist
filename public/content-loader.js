@@ -50,6 +50,50 @@
       document.querySelectorAll('.nav-logo-icon, [data-editable-img="hero-logo"]').forEach((img) => {
         if (img.tagName === 'IMG') img.src = imagesObj.logo;
       });
+      // Footer logo
+      document.querySelectorAll('footer .nav-logo img').forEach((img) => {
+        if (img.tagName === 'IMG') img.src = imagesObj.logo;
+      });
+    }
+    // About section image
+    if (imagesObj['about-image']) {
+      var wrap = document.querySelector('.about-image-wrap');
+      if (wrap) {
+        var img = document.createElement('img');
+        img.src = imagesObj['about-image'];
+        img.alt = 'About our clinic';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;border-radius:12px;';
+        wrap.style.position = 'relative';
+        wrap.appendChild(img);
+      }
+    }
+    // About section value card icons
+    for (var vi = 1; vi <= 3; vi++) {
+      if (imagesObj['about-val-icon-' + vi]) {
+        var valIcons = document.querySelectorAll('.about-value');
+        if (valIcons[vi - 1]) {
+          var svgEl = valIcons[vi - 1].querySelector('.about-value-icon');
+          if (svgEl) {
+            var iconImg = document.createElement('img');
+            iconImg.src = imagesObj['about-val-icon-' + vi];
+            iconImg.alt = 'Value icon';
+            iconImg.style.cssText = 'width:36px;height:36px;flex-shrink:0;object-fit:contain;';
+            svgEl.parentNode.replaceChild(iconImg, svgEl);
+          }
+        }
+      }
+    }
+    // Featured doctor photo
+    if (imagesObj['feature-photo']) {
+      var drWrap = document.querySelector('.dr-avatar-large');
+      if (drWrap) {
+        var drImg = document.createElement('img');
+        drImg.src = imagesObj['feature-photo'];
+        drImg.alt = 'Featured doctor';
+        drImg.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;border-radius:12px;';
+        drWrap.style.position = 'relative';
+        drWrap.appendChild(drImg);
+      }
     }
   }
 
